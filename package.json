@@ -2,6 +2,14 @@
     "name": "@mat3ra/wove",
     "version": "0.0.0",
     "description": "Workflow Viewer components",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mat3ra/wove.git"
+    },
+    "bugs": {
+        "url": "https://github.com/mat3ra/wove/issues"
+    },
+    "homepage": "https://github.com/mat3ra/wove",
     "main": "dist/exports.js",
     "types": "dist/exports.d.ts",
     "files": [
@@ -15,7 +23,8 @@
         "build:standalone": "vite build",
         "copy-css": "mkdir -p dist/stylesheets && cp src/stylesheets/* dist/stylesheets/ 2>/dev/null || true",
         "transpile": "tsc",
-        "test": "node --import tsx --test tests/*.tests.ts"
+        "test": "node --import tsx --test tests/*.tests.ts",
+        "lint": "eslint src tests && prettier --check src tests"
     },
     "dependencies": {
         "@mat3ra/wode": "*",
@@ -23,11 +32,20 @@
         "reactflow": "^11.7.2"
     },
     "peerDependencies": {
+        "@mat3ra/ave": "*",
+        "@mat3ra/code": "*",
+        "@mat3ra/esse": "*",
+        "@mat3ra/made": "*",
+        "@mat3ra/mode": "*",
+        "@mat3ra/move": "*",
+        "@mat3ra/standata": "*",
         "react": "^17.0.0",
         "react-dom": "^17.0.0"
     },
     "license": "Apache-2.0",
     "devDependencies": {
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
         "tsx": "^4.22.4",
         "typescript": "^5.6.6",
         "@mat3ra/tsconfig": "^2024.6.3-0",
@@ -53,9 +71,8 @@
         "@mat3ra/ade": "2026.5.29-0",
         "@mat3ra/code": "2026.5.27-0",
         "@mat3ra/mode": "2026.5.28-0",
-        "@mat3ra/wode": "2026.6.19-0",
+        "@mat3ra/wode": "2026.7.9-0",
         "@mat3ra/standata": "2026.6.12-1",
-        "reactflow": "^11.7.2",
         "@types/lodash": "^4.14.202"
     }
 }

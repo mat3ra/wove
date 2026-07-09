@@ -33,7 +33,7 @@ import esseSchemas from "@mat3ra/esse/dist/js/schemas.json";
 // 1. Register all ESSE schemas so JSONSchemasInterface lookups work.
 // 2. Set the ApplicationRegistry driver so getExecutablesByApplication() works.
 // ---------------------------------------------------------------------------
-JSONSchemasInterface.setSchemas(esseSchemas);
+JSONSchemasInterface.setSchemas(esseSchemas as any);
 ApplicationRegistry.setDriver(new ApplicationDriver());
 
 // ---------------------------------------------------------------------------
