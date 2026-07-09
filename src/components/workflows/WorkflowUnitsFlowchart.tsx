@@ -60,11 +60,11 @@ export function WorkflowUnitsFlowchart({
     );
 
     const elements: React.ReactNode[] = [];
-    workflow.unitInstances.forEach((unitUntyped, i) => {
+    workflow.unitInstances.forEach((unitUntyped: AnyWorkflowUnit, i: number) => {
         const unit = unitUntyped;
         let sw: WodeSubworkflow | null = null;
         if (unit.type === UnitType.subworkflow) {
-            sw = workflow.subworkflowInstances.find((s) => s.id === unit.id) ?? null;
+            sw = workflow.subworkflowInstances.find((s: WodeSubworkflow) => s.id === unit.id) ?? null;
             if (sw) {
                 unit.name = sw.name;
             }

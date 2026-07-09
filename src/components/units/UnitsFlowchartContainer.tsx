@@ -98,8 +98,8 @@ export default function UnitsFlowchartContainer({
             openUnitTypeSelectDialog({
                 id: "subworkflow-unit-add-modal",
                 onClose: closeUnitTypeSelectDialog,
-                onSelect: (unitType, prepend) => {
-                    onUnitAdd(unitType, prepend, unitIndex);
+                onSelect: (unitType: string, prepend: boolean) => {
+                    onUnitAdd(unitType as DefaultSubworkflowUnitType, prepend, unitIndex);
                     closeUnitTypeSelectDialog();
                 },
                 unitTypes: [

@@ -33,7 +33,7 @@ function DefaultNode(props: Props) {
         },
     };
 
-    const { target, source } = handlePositions[direction];
+    const { target, source } = (handlePositions as Record<string, { source: Position; target: Position }>)[direction];
 
     return (
         <NodeContainer>

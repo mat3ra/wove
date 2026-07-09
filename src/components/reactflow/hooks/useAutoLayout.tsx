@@ -76,7 +76,7 @@ function useAutoLayout(options: Options) {
         rafId = requestAnimationFrame(() => {
             const layout = tree<Node>()
                 // the node size configures the spacing between the nodes ([width, height])
-                .nodeSize(NodeSizes[direction])
+                .nodeSize((NodeSizes as unknown as Record<string, [number, number]>)[direction])
                 // this is needed for creating equal space between all nodes
                 .separation(() => 1);
 

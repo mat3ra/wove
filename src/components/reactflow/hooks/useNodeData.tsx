@@ -27,18 +27,18 @@ function getHandlePositions(unitType: `${UnitType}`, direction: Direction): Hand
         TB: {
             source: Position.Bottom,
             target: Position.Top,
-            sourceHandleStyles: handleStyles[unitType] || defaultHandleStyle,
-            sourceHandleLabels: handleLabels[unitType] || undefined,
+            sourceHandleStyles: (handleStyles as Record<string, any>)[unitType] || defaultHandleStyle,
+            sourceHandleLabels: (handleLabels as Record<string, any>)[unitType] || undefined,
         },
         LR: {
             source: Position.Right,
             target: Position.Left,
-            sourceHandleStyles: handleStyles[unitType] || defaultHandleStyle,
-            sourceHandleLabels: handleLabels[unitType] || undefined,
+            sourceHandleStyles: (handleStyles as Record<string, any>)[unitType] || defaultHandleStyle,
+            sourceHandleLabels: (handleLabels as Record<string, any>)[unitType] || undefined,
         },
     };
 
-    return handlePositions[direction];
+    return (handlePositions as Record<string, any>)[direction];
 }
 
 export function useNodeData(data: NodeData) {
