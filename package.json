@@ -37,7 +37,6 @@
         "@mat3ra/esse": "*",
         "@mat3ra/made": "*",
         "@mat3ra/mode": "*",
-        "@mat3ra/move": "*",
         "@mat3ra/standata": "*",
         "react": "^17.0.0",
         "react-dom": "^17.0.0"
