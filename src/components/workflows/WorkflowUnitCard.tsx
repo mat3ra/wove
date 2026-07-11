@@ -14,8 +14,8 @@ import s from "underscore.string";
 import { UnitsAccordion } from "../units/UnitsAccordion";
 import { OverviewAccordion } from "./OverviewAccordion";
 
-import { CardFooter } from "../../standalone/stubs/CardFooter";
-import { CardHeader } from "../../standalone/stubs/CardHeader";
+import { CardFooter } from "../common/CardFooter";
+import { CardHeader } from "../common/CardHeader";
 
 export type WorkflowUnitCardProps = {
     index: number;
@@ -31,6 +31,8 @@ export type WorkflowUnitCardProps = {
     onUpdate?: (subworkflow: SubworkflowSchema) => void;
     onApplicationUpdate?: (...args: unknown[]) => void;
     onModelUpdate?: (...args: unknown[]) => void;
+    ApplicationComponent?: React.ComponentType<any>;
+    ModelComponent?: React.ComponentType<any>;
 };
 
 export function WorkflowUnitCard({
@@ -47,6 +49,8 @@ export function WorkflowUnitCard({
     onUpdate,
     onApplicationUpdate,
     onModelUpdate,
+    ApplicationComponent,
+    ModelComponent,
 }: WorkflowUnitCardProps) {
     const theme = useTheme();
     const copyToClipboard = useCopyToClipboard();
@@ -123,6 +127,8 @@ export function WorkflowUnitCard({
                         onUpdate={onUpdate}
                         onApplicationUpdate={onApplicationUpdate}
                         onModelUpdate={onModelUpdate}
+                        ApplicationComponent={ApplicationComponent}
+                        ModelComponent={ModelComponent}
                     />
                 ) : null}
                 {Boolean(nestedUnits?.length) && (

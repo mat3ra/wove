@@ -16,6 +16,8 @@ export type WorkflowUnitsFlowchartProps = {
     editable?: boolean;
     onUnitRemove?: (flowchartId?: string) => void;
     onSubworkflowUnitUpdate?: (subworkflow: SubworkflowSchema) => void;
+    ApplicationComponent?: React.ComponentType<any>;
+    ModelComponent?: React.ComponentType<any>;
 };
 
 export function WorkflowUnitsFlowchart({
@@ -27,6 +29,8 @@ export function WorkflowUnitsFlowchart({
     editable = false,
     onUnitRemove,
     onSubworkflowUnitUpdate,
+    ApplicationComponent,
+    ModelComponent,
 }: WorkflowUnitsFlowchartProps) {
     const renderUnit = useCallback(
         (unit: any, index: number, sw: WodeSubworkflow | null) => {
@@ -44,6 +48,8 @@ export function WorkflowUnitsFlowchart({
                         isSelected={unit.flowchartId === activeUnit.flowchartId}
                         onClick={onClick}
                         isCardContentExpanded={isCardContentExpanded}
+                        ApplicationComponent={ApplicationComponent}
+                        ModelComponent={ModelComponent}
                     />
                 </Box>
             );
@@ -56,6 +62,8 @@ export function WorkflowUnitsFlowchart({
             activeUnit.flowchartId,
             onClick,
             isCardContentExpanded,
+            ApplicationComponent,
+            ModelComponent,
         ],
     );
 
