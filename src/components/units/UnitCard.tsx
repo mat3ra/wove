@@ -5,8 +5,8 @@ import s from "underscore.string";
 
 import { InnerContainer, StyledCard } from "./UnitCard.styled";
 
-import { CardFooter } from "../../standalone/stubs/CardFooter";
-import { CardHeader } from "../../standalone/stubs/CardHeader";
+import { CardFooter } from "../common/CardFooter";
+import { CardHeader } from "../common/CardHeader";
 
 const statusToColorEnum: Record<string, "default" | "warning" | "error" | "success"> = {
     idle: "default",

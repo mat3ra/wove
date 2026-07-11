@@ -9,6 +9,16 @@ import { nodePolyfills } from "vite-plugin-node-polyfills";
  * This is ONLY used for local development (`npm run dev`) and the
  * standalone build (`npm run build:standalone`).
  * The library build (tsc) ignores this file entirely.
+ *
+ * Kept in sync with the canonical @mat3ra/ave and @mat3ra/ive configs:
+ * minimal dedupe, no optimizeDeps overrides, and NO stubs for the @mat3ra/*
+ * data packages (made/code/ide/mode/ade/prode/prove) or the sibling *ve
+ * packages (ave/move). Those all bundle and run in the browser when the
+ * correct, mutually-consistent versions are installed and Vite is left to do
+ * its default CJS→ESM pre-bundling — see the jove/ave configs for the same
+ * pattern. The stubs this file used to carry were caused by ide/prode/prove
+ * simply not being installed (never declared), which is now fixed in
+ * package.json.
  */
 export default defineConfig({
     base: "/wove/",
@@ -23,6 +33,9 @@ export default defineConfig({
     ],
     define: {
         __dirname: JSON.stringify(__dirname),
+    },
+    server: {
+        port: 3007,
     },
     resolve: {
         dedupe: ["@mat3ra/esse", "@mui/material", "@mui/styles", "@emotion/react", "@emotion/styled"],
@@ -41,37 +54,7 @@ export default defineConfig({
                 find: /^@mat3ra\/wove\/dist\/(.*)$/,
                 replacement: path.resolve(__dirname, "src/$1"),
             },
-            // Stubs for packages that pull in Meteor/prode transitive deps
-            // not available in the standalone environment.
-            {
-                find: "@mat3ra/move",
-                replacement: path.resolve(__dirname, "src/standalone/stubs/move-shim.js"),
-            },
-            {
-                find: "@mat3ra/ave",
-                replacement: path.resolve(__dirname, "src/standalone/stubs/ave-shim.js"),
-            },
-            {
-                find: /^@mat3ra\/prode$/,
-                replacement: path.resolve(__dirname, "src/standalone/stubs/meteor.js"),
-            },
-            {
-                find: "@mat3ra/prove",
-                replacement: path.resolve(__dirname, "src/standalone/stubs/meteor.js"),
-            },
-            {
-                find: "@mat3ra/made",
-                replacement: path.resolve(__dirname, "src/standalone/stubs/meteor.js"),
-            },
-            {
-                find: "@mat3ra/ide/dist/js/compute",
-                replacement: path.resolve(__dirname, "src/standalone/stubs/ide-compute-stub.js"),
-            },
-            {
-                find: /^@mat3ra\/ide(\/.*)?$/,
-                replacement: path.resolve(__dirname, "src/standalone/stubs/meteor.js"),
-            },
-            // MUI ESM fixes
+            // MUI ESM fixes.
             {
                 find: /^@mui\/system\/(?!esm\/)(.*)$/,
                 replacement: path.resolve(__dirname, "node_modules/@mui/system/esm/$1"),
@@ -80,6 +63,7 @@ export default defineConfig({
                 find: /^@mui\/icons-material\/(?!esm\/)(.*)$/,
                 replacement: path.resolve(__dirname, "node_modules/@mui/icons-material/esm/$1"),
             },
+            // lodash → lodash-es for tree-shaking.
             {
                 find: /^lodash\/(?!es\/)(.*)$/,
                 replacement: path.resolve(__dirname, "node_modules/lodash-es/$1.js"),
@@ -95,8 +79,5 @@ export default defineConfig({
                 assetFileNames: "[name]-[hash].[ext]",
             },
         },
-    },
-    server: {
-        port: 3007,
     },
 });

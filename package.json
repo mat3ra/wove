@@ -28,7 +28,9 @@
     },
     "dependencies": {
         "@mat3ra/wode": "*",
-        "reactflow": "^11.7.2"
+        "d3-hierarchy": "^3.1.2",
+        "reactflow": "^11.7.2",
+        "underscore.string": "^3.3.4"
     },
     "peerDependencies": {
         "@exabyte-io/cove.js": "*",
@@ -42,18 +44,26 @@
         "react": "^17.0.0",
         "react-dom": "^17.0.0"
     },
+    "peerDependenciesMeta": {
+        "@mat3ra/ave": {
+            "optional": true
+        },
+        "@mat3ra/move": {
+            "optional": true
+        }
+    },
     "license": "Apache-2.0",
     "devDependencies": {
         "@emotion/babel-plugin": "^11.11.0",
         "@emotion/react": "^11.11.0",
         "@emotion/styled": "^11.11.0",
         "@exabyte-io/cove.js": "2026.7.9-1",
-        "@mat3ra/ave": "2026.7.9-3",
+        "@mat3ra/ade": "2026.5.29-0",
         "@mat3ra/code": "2026.5.27-0",
         "@mat3ra/esse": "2026.6.16-0",
+        "@mat3ra/ide": "2026.5.28-0",
         "@mat3ra/made": "2026.7.8-0",
-        "@mat3ra/mode": "2026.5.28-0",
-        "@mat3ra/move": "2026.7.10-0",
+        "@mat3ra/mode": "2026.6.3-0",
         "@mat3ra/standata": "2026.6.12-1",
         "@mat3ra/tsconfig": "^2024.6.3-0",
         "@mat3ra/wode": "2026.7.9-0",
