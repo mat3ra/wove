@@ -27,6 +27,7 @@ export function CardFooter({ actions = [], justifyContent = "flex-start" }: Card
                 <Tooltip key={action.id ?? index} title={action.content ?? ""}>
                     <span>
                         <IconButton
+                            id={action.id}
                             size="small"
                             disabled={action.disabled}
                             onClick={action.onClick}
