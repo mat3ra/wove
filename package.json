@@ -34,7 +34,7 @@
         "underscore.string": "^3.3.4"
     },
     "peerDependencies": {
-        "@exabyte-io/cove.js": "*",
+        "@mat3ra/cove.js": "*",
         "@mat3ra/ave": "*",
         "@mat3ra/code": "*",
         "@mat3ra/esse": "*",
@@ -58,7 +58,7 @@
         "@emotion/babel-plugin": "^11.11.0",
         "@emotion/react": "^11.11.0",
         "@emotion/styled": "^11.11.0",
-        "@exabyte-io/cove.js": "2026.7.9-1",
+        "@mat3ra/cove.js": "2026.7.18-1",
         "@mat3ra/ade": "2026.5.29-0",
         "@mat3ra/code": "2026.5.27-0",
         "@mat3ra/esse": "2026.6.16-0",

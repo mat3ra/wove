@@ -1,6 +1,6 @@
 import "reactflow/dist/style.css";
 
-import IconByName from "@exabyte-io/cove.js/dist/mui/components/icon";
+import IconByName from "@mat3ra/cove.js/dist/mui/components/icon";
 import type { Subworkflow } from "@mat3ra/wode";
 import { UnitType } from "@mat3ra/wode/dist/js/enums";
 import type {

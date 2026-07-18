@@ -1,13 +1,13 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import Dropdown from "@exabyte-io/cove.js/dist/mui/components/dropdown";
-import IconByName from "@exabyte-io/cove.js/dist/mui/components/icon";
+import Dropdown from "@mat3ra/cove.js/dist/mui/components/dropdown";
+import IconByName from "@mat3ra/cove.js/dist/mui/components/icon";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
-import InfoPopover from "@exabyte-io/cove.js/dist/mui/components/popover/info-popover/InfoPopover";
+import InfoPopover from "@mat3ra/cove.js/dist/mui/components/popover/info-popover/InfoPopover";
 const UnitTypeTitle = styled(Typography)(({ theme }) => ({
     fontWeight: "bold",
     margin: theme.spacing(1, 0),

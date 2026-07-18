@@ -1,6 +1,6 @@
 import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-runtime";
-import { useCopyToClipboard } from "@exabyte-io/cove.js/dist/hooks/useCopyToClipboard";
-import IconByName from "@exabyte-io/cove.js/dist/mui/components/icon";
+import { useCopyToClipboard } from "@mat3ra/cove.js/dist/hooks/useCopyToClipboard";
+import IconByName from "@mat3ra/cove.js/dist/mui/components/icon";
 import Code from "@mat3ra/code";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";

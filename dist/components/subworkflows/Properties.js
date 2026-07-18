@@ -2,7 +2,7 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable max-len */
-import Checkbox from "@exabyte-io/cove.js/dist/mui/components/checkbox/Checkbox";
+import Checkbox from "@mat3ra/cove.js/dist/mui/components/checkbox/Checkbox";
 const CheckboxComponent = Checkbox;
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import { useCallback } from "react";
 import _ from "underscore";
 import s from "underscore.string";
-import InfoPopover from "@exabyte-io/cove.js/dist/mui/components/popover/info-popover/InfoPopover";
+import InfoPopover from "@mat3ra/cove.js/dist/mui/components/popover/info-popover/InfoPopover";
 export function Properties({ subworkflow, onUpdate, editable = true }) {
     const onIsDraftChange = useCallback((bool) => {
         subworkflow.setIsDraft(bool);

@@ -1,5 +1,5 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import Accordion from "@exabyte-io/cove.js/dist/mui/components/accordion";
+import Accordion from "@mat3ra/cove.js/dist/mui/components/accordion";
 const AccordionComponent = Accordion;
 import Grid from "@mui/material/Grid";
 import { Properties } from "../subworkflows/Properties";
