@@ -1,4 +1,4 @@
-import Checkbox from "@exabyte-io/cove.js/dist/mui/components/checkbox/Checkbox";
+import Checkbox from "@mat3ra/cove/dist/mui/components/checkbox/Checkbox";
 import Grid from "@mui/material/Grid";
 import React from "react";
 

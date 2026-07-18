@@ -1,5 +1,5 @@
 import { jsx as _jsx } from "react/jsx-runtime";
-import JSONViewer from "@exabyte-io/cove.js/dist/other/object-viewer/json-viewer";
+import JSONViewer from "@mat3ra/cove/dist/other/object-viewer/json-viewer";
 import Box from "@mui/material/Box";
 function parseReasonForViewer(reason) {
     try {

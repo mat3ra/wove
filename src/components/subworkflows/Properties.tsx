@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable max-len */
-import Checkbox from "@exabyte-io/cove.js/dist/mui/components/checkbox/Checkbox";
+import Checkbox from "@mat3ra/cove/dist/mui/components/checkbox/Checkbox";
 const CheckboxComponent = Checkbox as any;
 import type { SubworkflowSchema } from "@mat3ra/esse/dist/js/types";
 import type { Subworkflow as WodeSubworkflow } from "@mat3ra/wode";
@@ -13,7 +13,7 @@ import React, { useCallback } from "react";
 import _ from "underscore";
 import s from "underscore.string";
 
-import InfoPopover from "@exabyte-io/cove.js/dist/mui/components/popover/info-popover/InfoPopover";
+import InfoPopover from "@mat3ra/cove/dist/mui/components/popover/info-popover/InfoPopover";
 
 export type PropertiesProps = {
     subworkflow: WodeSubworkflow;

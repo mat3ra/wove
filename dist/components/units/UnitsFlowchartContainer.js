@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import "reactflow/dist/style.css";
-import IconByName from "@exabyte-io/cove.js/dist/mui/components/icon";
+import IconByName from "@mat3ra/cove/dist/mui/components/icon";
 import { UnitType } from "@mat3ra/wode/dist/js/enums";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";

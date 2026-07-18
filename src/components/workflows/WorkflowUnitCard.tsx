@@ -1,5 +1,5 @@
-import { useCopyToClipboard } from "@exabyte-io/cove.js/dist/hooks/useCopyToClipboard";
-import IconByName from "@exabyte-io/cove.js/dist/mui/components/icon";
+import { useCopyToClipboard } from "@mat3ra/cove/dist/hooks/useCopyToClipboard";
+import IconByName from "@mat3ra/cove/dist/mui/components/icon";
 import Code from "@mat3ra/code";
 import type { SubworkflowSchema } from "@mat3ra/esse/dist/js/types";
 import type { Subworkflow as WodeSubworkflow } from "@mat3ra/wode";
