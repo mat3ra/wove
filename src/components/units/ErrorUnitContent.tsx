@@ -1,4 +1,4 @@
-import JSONViewer from "@mat3ra/cove.js/dist/other/object-viewer/json-viewer";
+import JSONViewer from "@mat3ra/cove/dist/other/object-viewer/json-viewer";
 import { ErrorUnit } from "@mat3ra/wode";
 import Box from "@mui/material/Box";
 import React from "react";

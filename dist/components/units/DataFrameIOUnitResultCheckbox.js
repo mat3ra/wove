@@ -1,5 +1,5 @@
 import { jsx as _jsx } from "react/jsx-runtime";
-import Checkbox from "@mat3ra/cove.js/dist/mui/components/checkbox/Checkbox";
+import Checkbox from "@mat3ra/cove/dist/mui/components/checkbox/Checkbox";
 import Grid from "@mui/material/Grid";
 export function DataFrameIOUnitResultCheckbox({ id, label, checked, disabled, onChange, }) {
     const CheckboxAny = Checkbox;

@@ -1,5 +1,5 @@
 import { jsx as _jsx } from "react/jsx-runtime";
-import Accordion from "@mat3ra/cove.js/dist/mui/components/accordion";
+import Accordion from "@mat3ra/cove/dist/mui/components/accordion";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { UnitCard } from "./UnitCard";
 export function UnitsAccordion({ units }) {

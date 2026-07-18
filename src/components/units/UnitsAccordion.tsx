@@ -1,4 +1,4 @@
-import Accordion from "@mat3ra/cove.js/dist/mui/components/accordion";
+import Accordion from "@mat3ra/cove/dist/mui/components/accordion";
 import type { AnySubworkflowUnit } from "@mat3ra/wode/dist/js/units/factory";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import React from "react";

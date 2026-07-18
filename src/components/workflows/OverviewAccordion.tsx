@@ -1,4 +1,4 @@
-import Accordion from "@mat3ra/cove.js/dist/mui/components/accordion";
+import Accordion from "@mat3ra/cove/dist/mui/components/accordion";
 const AccordionComponent = Accordion as any;
 import type { SubworkflowSchema } from "@mat3ra/esse/dist/js/types";
 import type { Model as ModeModel } from "@mat3ra/mode";
