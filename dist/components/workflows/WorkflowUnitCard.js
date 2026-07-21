@@ -36,7 +36,15 @@ export function WorkflowUnitCard({ index, unit, isSelected = false, onClick, isR
         },
     ], [unit.name, unit.flowchartId, contentToCopy, copyToClipboard, isRemovable, onRemove]);
     const onCardClick = useCallback((e) => {
-        if (!e.defaultPrevented)
+        var _a, _b;
+        // Select on any card click that is not on a real control (copy/delete IconButtons,
+        // dropdown items). Do NOT gate on e.defaultPrevented: the Overview/Units accordion
+        // summaries call preventDefault() to mark the expansion toggle as handled (see
+        // cove's Accordion), and the pre-extraction webapp relied on card clicks landing
+        // there still moving the selection — the subworkflow panel must follow whichever
+        // card the user interacts with.
+        const isControlClick = Boolean((_b = (_a = e.target) === null || _a === void 0 ? void 0 : _a.closest) === null || _b === void 0 ? void 0 : _b.call(_a, "button, a"));
+        if (!isControlClick)
             onClick(unit);
     }, [onClick, unit]);
     const avatarIndex = Code.utils.convertArabicToRoman(index);

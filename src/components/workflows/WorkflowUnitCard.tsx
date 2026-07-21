@@ -84,7 +84,14 @@ export function WorkflowUnitCard({
 
     const onCardClick = useCallback(
         (e: React.MouseEvent) => {
-            if (!e.defaultPrevented) onClick(unit);
+            // Select on any card click that is not on a real control (copy/delete IconButtons,
+            // dropdown items). Do NOT gate on e.defaultPrevented: the Overview/Units accordion
+            // summaries call preventDefault() to mark the expansion toggle as handled (see
+            // cove's Accordion), and the pre-extraction webapp relied on card clicks landing
+            // there still moving the selection — the subworkflow panel must follow whichever
+            // card the user interacts with.
+            const isControlClick = Boolean((e.target as Element | null)?.closest?.("button, a"));
+            if (!isControlClick) onClick(unit);
         },
         [onClick, unit],
     );
@@ -99,7 +106,8 @@ export function WorkflowUnitCard({
         <Card
             id={`workflow-card-unit-${s.slugify(unit.name)}`}
             onClick={onCardClick}
-            sx={{ width: "100%", minWidth: "280px", cursor: "pointer" }}>
+            sx={{ width: "100%", minWidth: "280px", cursor: "pointer" }}
+        >
             <Box sx={{ border: `4px solid ${borderColor}` }}>
                 <CardHeader
                     avatarType="roman"
