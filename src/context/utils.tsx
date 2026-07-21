@@ -1,5 +1,4 @@
 import { Made } from "@mat3ra/made";
-import { PointsPathFormDataProvider } from "@mat3ra/wode";
 import React, { type ComponentType } from "react";
 
 // ---------------------------------------------------------------------------
@@ -29,11 +28,31 @@ function DefaultBrillouinZoneImage({ imgSrc, description }: BrillouinZoneImagePr
     );
 }
 
+const POINTS_PATH_PROVIDER_NAMES = ["kpath", "qpath", "explicitKPath"] as const;
+
+type PointsPathLikeProvider = {
+    name: (typeof POINTS_PATH_PROVIDER_NAMES)[number];
+    material: any;
+};
+
 interface ExtraComponentProps {
-    provider: PointsPathFormDataProvider<any> | unknown;
+    provider: PointsPathLikeProvider | unknown;
     description?: string;
     /** Injected by the host app (e.g. @mat3ra/move's BrillouinZoneImage). Defaults to a plain <img>. */
     BrillouinZoneImageComponent?: ComponentType<BrillouinZoneImageProps>;
+}
+
+// Use the provider's schema `name`, not `instanceof`: job/workflow units are built via
+// Meteor-compiled `@mat3ra/wode` (see `rspack.config.js` `compileWithMeteor`); wove UI may
+// resolve another copy of the same class, so `instanceof PointsPathFormDataProvider` is false
+// even for a real kpath/qpath/explicitKPath provider (mirrors `isExecutionUnit` in
+// workflow-designer's `ImportantSettings.tsx`, which hit the same issue for `ExecutionUnit`).
+function isPointsPathProvider(provider: unknown): provider is PointsPathLikeProvider {
+    return (
+        typeof provider === "object" &&
+        provider !== null &&
+        POINTS_PATH_PROVIDER_NAMES.includes((provider as { name?: string }).name as any)
+    );
 }
 
 export function ExtraImportantSettingsByContextProvider({
@@ -41,7 +60,7 @@ export function ExtraImportantSettingsByContextProvider({
     description = "",
     BrillouinZoneImageComponent = DefaultBrillouinZoneImage,
 }: ExtraComponentProps) {
-    if (provider instanceof PointsPathFormDataProvider) {
+    if (isPointsPathProvider(provider)) {
         const { material } = provider;
         const latticeType = new Made.Lattice(material.lattice).typeExtended;
         const imgSrc = `/images/brillouin_zone/${latticeType.toLowerCase().replace("_", "-")}.png`;
