@@ -36,15 +36,14 @@ export function WorkflowUnitCard({ index, unit, isSelected = false, onClick, isR
         },
     ], [unit.name, unit.flowchartId, contentToCopy, copyToClipboard, isRemovable, onRemove]);
     const onCardClick = useCallback((e) => {
-        var _a, _b;
-        // Select on any card click that is not on a real control (copy/delete IconButtons,
-        // dropdown items). Do NOT gate on e.defaultPrevented: the Overview/Units accordion
-        // summaries call preventDefault() to mark the expansion toggle as handled (see
-        // cove's Accordion), and the pre-extraction webapp relied on card clicks landing
-        // there still moving the selection — the subworkflow panel must follow whichever
-        // card the user interacts with.
-        const isControlClick = Boolean((_b = (_a = e.target) === null || _a === void 0 ? void 0 : _a.closest) === null || _b === void 0 ? void 0 : _b.call(_a, "button, a"));
-        if (!isControlClick)
+        // Accordion summary clicks preventDefault() (cove's Accordion marks the expansion
+        // toggle as handled) and must NOT move the selection: the Cypress job-designer step
+        // "I open {tab} tab of job designer" bulk-clicks every card's Overview accordion
+        // (toggleSubworkflowOverview, {multiple: true}) and relies on the selection staying
+        // put. Selection-on-center-click instead relies on CardHeader keeping the
+        // pre-extraction 73px height so the card's midpoint falls on the neutral CardFooter
+        // strip - see CardHeader.tsx.
+        if (!e.defaultPrevented)
             onClick(unit);
     }, [onClick, unit]);
     const avatarIndex = Code.utils.convertArabicToRoman(index);
