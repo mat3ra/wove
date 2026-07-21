@@ -84,14 +84,14 @@ export function WorkflowUnitCard({
 
     const onCardClick = useCallback(
         (e: React.MouseEvent) => {
-            // Select on any card click that is not on a real control (copy/delete IconButtons,
-            // dropdown items). Do NOT gate on e.defaultPrevented: the Overview/Units accordion
-            // summaries call preventDefault() to mark the expansion toggle as handled (see
-            // cove's Accordion), and the pre-extraction webapp relied on card clicks landing
-            // there still moving the selection — the subworkflow panel must follow whichever
-            // card the user interacts with.
-            const isControlClick = Boolean((e.target as Element | null)?.closest?.("button, a"));
-            if (!isControlClick) onClick(unit);
+            // Accordion summary clicks preventDefault() (cove's Accordion marks the expansion
+            // toggle as handled) and must NOT move the selection: the Cypress job-designer step
+            // "I open {tab} tab of job designer" bulk-clicks every card's Overview accordion
+            // (toggleSubworkflowOverview, {multiple: true}) and relies on the selection staying
+            // put. Selection-on-center-click instead relies on CardHeader keeping the
+            // pre-extraction 73px height so the card's midpoint falls on the neutral CardFooter
+            // strip - see CardHeader.tsx.
+            if (!e.defaultPrevented) onClick(unit);
         },
         [onClick, unit],
     );

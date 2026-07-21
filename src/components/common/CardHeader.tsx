@@ -53,7 +53,12 @@ export function CardHeader({
                     {subheader}
                 </Box>
             }
-            sx={{ py: 0.5, px: 1 }}
+            // Fixed 73px height matches the original webapp CardHeader organism
+            // (CardHeader.styled StyledCardHeader). Keeping this height is load-bearing:
+            // it puts the card's geometric center on the neutral CardFooter strip, so
+            // center-clicks (Cypress unit selection) hit an area that does not
+            // preventDefault - see the onCardClick note in WorkflowUnitCard.tsx.
+            sx={{ height: "73px", boxSizing: "border-box", py: 0.5, px: 1 }}
         />
     );
 }
