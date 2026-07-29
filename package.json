@@ -23,7 +23,7 @@
         "build:standalone": "vite build",
         "copy-css": "mkdir -p dist/stylesheets && cp src/stylesheets/* dist/stylesheets/ 2>/dev/null || true",
         "transpile": "tsc",
-        "test": "node --import tsx --test tests/*.tests.ts",
+        "test": "node --import tsx --test tests/*.tests.ts tests/*.tests.tsx",
         "lint": "eslint src tests && prettier --check src tests",
         "prepublishOnly": "npm run build"
     },
