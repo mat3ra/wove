@@ -1,14 +1,18 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 /**
- * Minimal stub for the Meteor CardFooter component.
- * Renders action buttons in a horizontal row.
+ * Port of the webapp's organisms/card/CardFooter - labeled text buttons (VIEW / DELETE /
+ * CLONE / ...) with a leading icon, matching the production card look.
  */
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-export function CardFooter({ actions = [], justifyContent = "flex-start" }) {
-    return (_jsx(Box, { display: "flex", justifyContent: justifyContent, px: 1, py: 0.5, children: actions.map((action, index) => {
-            var _a, _b, _c;
-            return (_jsx(Tooltip, { title: (_a = action.content) !== null && _a !== void 0 ? _a : "", children: _jsx("span", { children: _jsx(IconButton, { id: action.id, size: "small", disabled: action.disabled, onClick: action.onClick, children: (_b = action.icon) !== null && _b !== void 0 ? _b : null }) }) }, (_c = action.id) !== null && _c !== void 0 ? _c : index));
-        }) }));
+import Button from "@mui/material/Button";
+import CardActions from "@mui/material/CardActions";
+export function CardFooter({ actions = [], variant = "text", color = "primary", justifyContent = "space-between", }) {
+    return (_jsx(CardActions, { disableSpacing: true, children: _jsx(Box, { sx: {
+                display: "flex",
+                justifyContent,
+                width: "100%",
+            }, children: actions.map((action, index) => {
+                const { onClick, content, icon, disabled, id } = action;
+                return (_jsx(Button, { id: id, variant: variant, startIcon: icon, color: color, onClick: onClick, disabled: disabled, children: content }, `${content}-${index}`));
+            }) }) }));
 }

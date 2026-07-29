@@ -64,7 +64,9 @@ export function WorkflowUnitCard({
         () => [
             {
                 id: `copy-${s.slugify(unit.name)}`,
-                disabled: false,
+                // Copying the subworkflow (for paste into another workflow) is an editing
+                // affordance - disabled on read-only views, e.g. a finished job's workflow tab.
+                disabled: !editable,
                 content: "Copy",
                 icon: <IconByName name="actions.copy" />,
                 onClick: () => {
@@ -79,7 +81,15 @@ export function WorkflowUnitCard({
                 onClick: () => onRemove(unit.flowchartId),
             },
         ],
-        [unit.name, unit.flowchartId, contentToCopy, copyToClipboard, isRemovable, onRemove],
+        [
+            unit.name,
+            unit.flowchartId,
+            contentToCopy,
+            copyToClipboard,
+            isRemovable,
+            onRemove,
+            editable,
+        ],
     );
 
     const onCardClick = useCallback(

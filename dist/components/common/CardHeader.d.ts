@@ -3,11 +3,11 @@ export interface CardHeaderProps {
     title?: string;
     subheader?: string;
     avatarIndex?: string | number;
-    avatarType?: "roman" | "numeric";
+    avatarType?: "roman" | "arabic";
     actions?: Array<Record<string, unknown>>;
     status?: string;
-    badgeColor?: "default" | "warning" | "error" | "success" | string;
+    badgeColor?: string;
     isExpanded?: boolean;
     contentToCopy?: string;
 }
-export declare function CardHeader({ title, subheader, avatarIndex, badgeColor, status, }: CardHeaderProps): React.JSX.Element;
+export declare function CardHeader({ title, subheader, avatarIndex, avatarType, actions, status, badgeColor, isExpanded, contentToCopy, }: CardHeaderProps): React.JSX.Element;
