@@ -1,42 +1,60 @@
 /**
- * Minimal stub for the Meteor CardFooter component.
- * Renders action buttons in a horizontal row.
+ * Port of the webapp's organisms/card/CardFooter - labeled text buttons (VIEW / DELETE /
+ * CLONE / ...) with a leading icon, matching the production card look.
  */
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
+import Button from "@mui/material/Button";
+import CardActions from "@mui/material/CardActions";
 import React from "react";
 
 export interface CardFooterAction {
     id?: string;
     content?: string;
-    icon?: React.ReactNode;
+    icon?: React.ReactElement;
     onClick?: () => void;
     disabled?: boolean;
 }
 
 export interface CardFooterProps {
     actions?: CardFooterAction[];
+    variant?: "text" | "outlined" | "contained";
+    color?: "primary" | "secondary" | "inherit" | "error" | "info" | "success" | "warning";
     justifyContent?: string;
 }
 
-export function CardFooter({ actions = [], justifyContent = "flex-start" }: CardFooterProps) {
+export function CardFooter({
+    actions = [],
+    variant = "text",
+    color = "primary",
+    justifyContent = "space-between",
+}: CardFooterProps) {
     return (
-        <Box display="flex" justifyContent={justifyContent} px={1} py={0.5}>
-            {actions.map((action, index) => (
-                <Tooltip key={action.id ?? index} title={action.content ?? ""}>
-                    <span>
-                        <IconButton
-                            id={action.id}
-                            size="small"
-                            disabled={action.disabled}
-                            onClick={action.onClick}
+        <CardActions disableSpacing>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent,
+                    width: "100%",
+                }}
+            >
+                {actions.map((action, index) => {
+                    const { onClick, content, icon, disabled, id } = action;
+                    return (
+                        <Button
+                            id={id}
+                            // eslint-disable-next-line react/no-array-index-key
+                            key={`${content}-${index}`}
+                            variant={variant}
+                            startIcon={icon}
+                            color={color}
+                            onClick={onClick}
+                            disabled={disabled}
                         >
-                            {action.icon ?? null}
-                        </IconButton>
-                    </span>
-                </Tooltip>
-            ))}
-        </Box>
+                            {content}
+                        </Button>
+                    );
+                })}
+            </Box>
+        </CardActions>
     );
 }

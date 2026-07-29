@@ -20,7 +20,9 @@ export function WorkflowUnitCard({ index, unit, isSelected = false, onClick, isR
     const actions = useMemo(() => [
         {
             id: `copy-${s.slugify(unit.name)}`,
-            disabled: false,
+            // Copying the subworkflow (for paste into another workflow) is an editing
+            // affordance - disabled on read-only views, e.g. a finished job's workflow tab.
+            disabled: !editable,
             content: "Copy",
             icon: _jsx(IconByName, { name: "actions.copy" }),
             onClick: () => {
@@ -34,7 +36,15 @@ export function WorkflowUnitCard({ index, unit, isSelected = false, onClick, isR
             icon: _jsx(IconByName, { name: "actions.delete" }),
             onClick: () => onRemove(unit.flowchartId),
         },
-    ], [unit.name, unit.flowchartId, contentToCopy, copyToClipboard, isRemovable, onRemove]);
+    ], [
+        unit.name,
+        unit.flowchartId,
+        contentToCopy,
+        copyToClipboard,
+        isRemovable,
+        onRemove,
+        editable,
+    ]);
     const onCardClick = useCallback((e) => {
         // Accordion summary clicks preventDefault() (cove's Accordion marks the expansion
         // toggle as handled) and must NOT move the selection: the Cypress job-designer step

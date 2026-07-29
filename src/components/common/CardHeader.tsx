@@ -1,64 +1,131 @@
 /**
- * Minimal stub for the Meteor CardHeader component.
- * Props mirror what UnitCard and WorkflowUnitCard pass to it.
+ * Port of the webapp's organisms/card/CardHeader - the unit/subworkflow card header with
+ * status-badged avatar, vertical-dots actions dropdown, and the "Flowchart ID" copy field.
+ * Prop contract matches what UnitCard and WorkflowUnitCard pass.
  */
-import Avatar from "@mui/material/Avatar";
+import Dropdown from "@mat3ra/cove/dist/mui/components/dropdown";
+import IconByName from "@mat3ra/cove/dist/mui/components/icon";
+import { showSuccessAlert } from "@mat3ra/cove/dist/other/alerts";
+import { copyToClipboardSafe } from "@mat3ra/cove/dist/utils/clipboard";
 import Box from "@mui/material/Box";
-import Chip from "@mui/material/Chip";
-import MuiCardHeader from "@mui/material/CardHeader";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
 import React from "react";
+import s from "underscore.string";
+
+import {
+    ActionContainer,
+    FlowchartIdContainer,
+    StyledAvatar,
+    StyledBadge,
+    StyledCardHeader,
+    Subheader,
+} from "./CardHeader.styled";
+
+const BADGE_COLORS = ["primary", "secondary", "default", "error", "info", "success", "warning"];
 
 export interface CardHeaderProps {
     title?: string;
     subheader?: string;
     avatarIndex?: string | number;
-    avatarType?: "roman" | "numeric";
+    avatarType?: "roman" | "arabic";
     actions?: Array<Record<string, unknown>>;
     status?: string;
-    badgeColor?: "default" | "warning" | "error" | "success" | string;
+    badgeColor?: string;
     isExpanded?: boolean;
     contentToCopy?: string;
 }
 
 export function CardHeader({
-    title,
-    subheader,
+    title = "",
+    subheader = "",
     avatarIndex,
+    avatarType = "arabic",
+    actions = [],
+    status = "",
     badgeColor = "default",
-    status,
+    isExpanded = false,
+    contentToCopy,
 }: CardHeaderProps) {
-    const colorMap: Record<string, string> = {
-        default: "#9e9e9e",
-        warning: "#ff9800",
-        error: "#f44336",
-        success: "#4caf50",
-    };
-    const avatarBg = colorMap[badgeColor] ?? badgeColor ?? "#9e9e9e";
+    const avatarVariant = avatarType === "roman" ? "rounded" : "circular";
+    const isBadge = avatarType !== "roman";
+    const safeBadgeColor = BADGE_COLORS.includes(badgeColor) ? badgeColor : "default";
 
     return (
-        <MuiCardHeader
+        <StyledCardHeader
             avatar={
-                <Avatar sx={{ bgcolor: avatarBg, width: 32, height: 32, fontSize: "0.8rem" }}>
-                    {avatarIndex ?? "?"}
-                </Avatar>
+                <StyledBadge
+                    color={safeBadgeColor as any}
+                    overlap="circular"
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    title={s.capitalize(status)}
+                    badgeContent={isBadge && status ? <Box>{s.capitalize(status[0])}</Box> : null}
+                >
+                    <StyledAvatar isBadge={isBadge} color={safeBadgeColor} variant={avatarVariant}>
+                        {avatarIndex}
+                    </StyledAvatar>
+                </StyledBadge>
+            }
+            action={
+                !isExpanded &&
+                Boolean(actions.length) && (
+                    <ActionContainer>
+                        <Dropdown
+                            popperProps={{
+                                id: "popper",
+                                modifiers: [
+                                    {
+                                        name: "flip",
+                                        enabled: true,
+                                        options: {
+                                            flipVariations: ["bottom"],
+                                            behavior: ["bottom"],
+                                        },
+                                    },
+                                ],
+                            }}
+                            actions={actions as any}
+                            paperPlacement="bottom-start"
+                        >
+                            <IconButton>
+                                <IconByName fontSize="small" name="shapes.dots.vertical" />
+                            </IconButton>
+                        </Dropdown>
+                    </ActionContainer>
+                )
             }
             title={
-                <Box display="flex" alignItems="center" gap={1}>
+                <Typography noWrap variant="subtitle2" color="text.primary">
                     {title}
-                    {status && <Chip label={status} size="small" />}
-                </Box>
+                </Typography>
             }
             subheader={
-                <Box sx={{ fontSize: "0.65rem", opacity: 0.6, wordBreak: "break-all" }}>
-                    {subheader}
-                </Box>
+                <Subheader>
+                    {isExpanded ? (
+                        <Box>
+                            <Typography variant="caption" noWrap sx={{ width: "100%" }}>
+                                Flowchart ID:&nbsp;
+                            </Typography>
+                        </Box>
+                    ) : null}
+                    <FlowchartIdContainer>
+                        <Typography variant="caption" noWrap>
+                            {subheader}
+                        </Typography>
+                        <IconButton
+                            onClick={() =>
+                                copyToClipboardSafe(contentToCopy ?? "").then((ok: boolean) => {
+                                    if (ok) {
+                                        showSuccessAlert(`Unit ${title} was successfully copied`);
+                                    }
+                                })
+                            }
+                        >
+                            <IconByName name="actions.copy" />
+                        </IconButton>
+                    </FlowchartIdContainer>
+                </Subheader>
             }
-            // Fixed 73px height matches the original webapp CardHeader organism
-            // (CardHeader.styled StyledCardHeader). Keeping this height is load-bearing:
-            // it puts the card's geometric center on the neutral CardFooter strip, so
-            // center-clicks (Cypress unit selection) hit an area that does not
-            // preventDefault - see the onCardClick note in WorkflowUnitCard.tsx.
-            sx={{ height: "73px", boxSizing: "border-box", py: 0.5, px: 1 }}
         />
     );
 }
