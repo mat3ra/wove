@@ -16,12 +16,23 @@ function isPointsPathProvider(provider) {
         provider !== null &&
         POINTS_PATH_PROVIDER_NAMES.includes(provider.name));
 }
+/**
+ * Resolve lattice type + Brillouin-zone image path from a points-path provider material.
+ * Prefer schema `lattice` JSON over Material getters (`Lattice` / `getLattice`) so this works
+ * across made API renames and plain material configs.
+ */
+export function getBrillouinZoneImagePropsFromMaterial(material) {
+    const lattice = new Made.Lattice(material.lattice);
+    const latticeTypeExtended = lattice.typeExtended;
+    return {
+        latticeType: lattice.type,
+        imgSrc: `/images/brillouin_zone/${latticeTypeExtended.toLowerCase().replace("_", "-")}.png`,
+    };
+}
 export function ExtraImportantSettingsByContextProvider({ provider, description = "", BrillouinZoneImageComponent = DefaultBrillouinZoneImage, }) {
     if (isPointsPathProvider(provider)) {
-        const { material } = provider;
-        const latticeType = new Made.Lattice(material.lattice).typeExtended;
-        const imgSrc = `/images/brillouin_zone/${latticeType.toLowerCase().replace("_", "-")}.png`;
-        return (_jsx(BrillouinZoneImageComponent, { latticeType: material.Lattice.type, imgSrc: imgSrc, description: description }));
+        const { latticeType, imgSrc } = getBrillouinZoneImagePropsFromMaterial(provider.material);
+        return (_jsx(BrillouinZoneImageComponent, { latticeType: latticeType, imgSrc: imgSrc, description: description }));
     }
     return null;
 }
