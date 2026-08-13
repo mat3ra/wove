@@ -59,6 +59,10 @@ function isPointsPathProvider(provider: unknown): provider is PointsPathLikeProv
  * Resolve lattice type + Brillouin-zone image path from a points-path provider material.
  * Prefer schema `lattice` JSON over Material getters (`Lattice` / `getLattice`) so this works
  * across made API renames and plain material configs.
+ *
+ * TODO: Do not hardcode web-app public paths here (`/images/brillouin_zone/...`). Own the
+ * assets in materials-designer (or another UI package) and inject `imgSrc` / the image
+ * component from the host so wove stays path-agnostic.
  */
 export function getBrillouinZoneImagePropsFromMaterial(material: {
     lattice: ConstructorParameters<typeof Made.Lattice>[0];
@@ -67,6 +71,7 @@ export function getBrillouinZoneImagePropsFromMaterial(material: {
     const latticeTypeExtended = lattice.typeExtended;
     return {
         latticeType: lattice.type,
+        // TODO: replace web-app path; see JSDoc above.
         imgSrc: `/images/brillouin_zone/${latticeTypeExtended.toLowerCase().replace("_", "-")}.png`,
     };
 }
