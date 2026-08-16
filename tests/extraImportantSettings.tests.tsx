@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
+import { Utils } from "@mat3ra/utils";
 import assert from "node:assert";
 import test from "node:test";
-
-import { Utils } from "@mat3ra/utils";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
@@ -68,6 +67,7 @@ test("ExtraImportantSettingsByContextProvider passes zone geometry to the inject
         <ExtraImportantSettingsByContextProvider
             provider={{ name: "kpath", material: { lattice: fccLattice } }}
             description="BZ"
+            // eslint-disable-next-line react/jsx-no-bind -- a component to inject, not a handler
             BrillouinZoneImageComponent={CapturingComponent}
         />,
     );
