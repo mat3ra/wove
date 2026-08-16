@@ -10,10 +10,23 @@ import React, { type ComponentType } from "react";
 // and wove falls back to the plain <img> package-native default below.
 // ---------------------------------------------------------------------------
 
+/** Shape of a zone face as returned by made's `ReciprocalLattice.brillouinZone`. */
+type BrillouinZoneFaceLike = {
+    vertices: number[][];
+    normal: number[];
+};
+
 type BrillouinZoneImageProps = {
     latticeType?: string;
     imgSrc?: string;
     description?: string;
+    /**
+     * Zone geometry derived from this material's own reciprocal lattice, for components that
+     * draw the zone rather than fetch a picture of it. Undefined when the installed `made`
+     * predates `ReciprocalLattice.brillouinZone`, in which case `imgSrc` remains the only
+     * option.
+     */
+    faces?: BrillouinZoneFaceLike[] | null;
 };
 
 function DefaultBrillouinZoneImage({ imgSrc, description }: BrillouinZoneImageProps) {
@@ -56,23 +69,44 @@ function isPointsPathProvider(provider: unknown): provider is PointsPathLikeProv
 }
 
 /**
+ * Zone geometry for a material, from its own reciprocal lattice.
+ *
+ * Feature-detected rather than imported directly: `ReciprocalLattice.brillouinZone` arrives in
+ * made 2026.8+, and wove still has to build against older pins. Returns null there, leaving
+ * `imgSrc` as the only option.
+ */
+function getBrillouinZoneFacesFromMaterial(material: {
+    lattice: ConstructorParameters<typeof Made.Lattice>[0];
+}): BrillouinZoneFaceLike[] | null {
+    const { ReciprocalLattice } = Made as unknown as { ReciprocalLattice?: any };
+    if (!ReciprocalLattice) return null;
+    try {
+        return new ReciprocalLattice(material.lattice).brillouinZone ?? null;
+    } catch {
+        return null;
+    }
+}
+
+/**
  * Resolve lattice type + Brillouin-zone image path from a points-path provider material.
  * Prefer schema `lattice` JSON over Material getters (`Lattice` / `getLattice`) so this works
  * across made API renames and plain material configs.
  *
- * TODO: Do not hardcode web-app public paths here (`/images/brillouin_zone/...`). Own the
- * assets in materials-designer (or another UI package) and inject `imgSrc` / the image
- * component from the host so wove stays path-agnostic.
+ * The `imgSrc` here points at a web-app public path that no package ships, so consumers other
+ * than the web app render a broken image, and it cannot resolve under a non-root deployment
+ * base either. It is kept only for hosts that do serve those assets; everyone else should draw
+ * the zone from the `faces` geometry passed alongside it.
  */
 export function getBrillouinZoneImagePropsFromMaterial(material: {
     lattice: ConstructorParameters<typeof Made.Lattice>[0];
-}): Pick<BrillouinZoneImageProps, "latticeType" | "imgSrc"> {
+}): Pick<BrillouinZoneImageProps, "latticeType" | "imgSrc" | "faces"> {
     const lattice = new Made.Lattice(material.lattice);
     const latticeTypeExtended = lattice.typeExtended;
     return {
         latticeType: lattice.type,
-        // TODO: replace web-app path; see JSDoc above.
+        // Legacy: web-app-only asset; see JSDoc above.
         imgSrc: `/images/brillouin_zone/${latticeTypeExtended.toLowerCase().replace("_", "-")}.png`,
+        faces: getBrillouinZoneFacesFromMaterial(material),
     };
 }
 
@@ -82,12 +116,15 @@ export function ExtraImportantSettingsByContextProvider({
     BrillouinZoneImageComponent = DefaultBrillouinZoneImage,
 }: ExtraComponentProps) {
     if (isPointsPathProvider(provider)) {
-        const { latticeType, imgSrc } = getBrillouinZoneImagePropsFromMaterial(provider.material);
+        const { latticeType, imgSrc, faces } = getBrillouinZoneImagePropsFromMaterial(
+            provider.material,
+        );
         return (
             <BrillouinZoneImageComponent
                 latticeType={latticeType}
                 imgSrc={imgSrc}
                 description={description}
+                faces={faces}
             />
         );
     }

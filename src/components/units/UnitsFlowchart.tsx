@@ -19,6 +19,12 @@ import useAutoLayout from "../reactflow/hooks/useAutoLayout";
 import { transformUnitsToNodesAndEdges } from "../reactflow/hooks/useTransformUnitsToNodesAndEdges";
 import { Action, Direction, NodeData } from "./types";
 
+/**
+ * Scale below which a unit card's name stops being readable. Auto-fit clamps here rather
+ * than shrinking a long workflow to fit the viewport.
+ */
+const MIN_READABLE_ZOOM = 0.6;
+
 interface Props {
     units: AnySubworkflowUnitSchema[];
     areUnitsExpanded: boolean;
@@ -27,6 +33,8 @@ interface Props {
     getActions: (unit: AnySubworkflowUnitSchema, index: number) => Action[];
     autoFitToView: boolean;
     isFocused: boolean;
+    showDeveloperInfo?: boolean;
+    showStatus?: boolean;
 }
 
 function UnitsFlowchart(props: Props) {
@@ -38,6 +46,8 @@ function UnitsFlowchart(props: Props) {
         getActions,
         autoFitToView,
         isFocused,
+        showDeveloperInfo,
+        showStatus,
     } = props;
 
     const [direction] = useState<Direction>(Direction.TB);
@@ -65,6 +75,8 @@ function UnitsFlowchart(props: Props) {
             areUnitsExpanded,
             getActions,
             onUnitSelect,
+            showDeveloperInfo,
+            showStatus,
         });
 
         // Carry layout state (position + handle sides + style) from the previous render for any
@@ -103,6 +115,8 @@ function UnitsFlowchart(props: Props) {
         direction,
         getActions,
         onUnitSelect,
+        showDeveloperInfo,
+        showStatus,
     ]);
 
     // used to force execution order of nodes/edges update and automatic layout
@@ -114,7 +128,11 @@ function UnitsFlowchart(props: Props) {
 
     useEffect(() => {
         if (autoFitToView) {
-            fitView({ duration: 400 });
+            // Fitting a long workflow into the viewport otherwise shrinks unit cards until
+            // their names are unreadable — a ten-unit subworkflow lands around 6px type, on a
+            // canvas that is mostly empty anyway. Stop shrinking at a legible scale and let
+            // the taller-than-viewport result scroll instead.
+            fitView({ duration: 400, minZoom: MIN_READABLE_ZOOM });
         }
     }, [fitView, nodes, autoFitToView]);
 
@@ -130,7 +148,8 @@ function UnitsFlowchart(props: Props) {
             preventScrolling={isFocused}
             zoomOnScroll={isFocused}
             minZoom={0.2}
-            fitView>
+            fitView
+        >
             <Background gap={16} size={0.5} color="000" />
             <Controls />
         </ReactFlow>

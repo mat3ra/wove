@@ -56,3 +56,33 @@ test("ExtraImportantSettingsByContextProvider returns null for non-points-path p
 
     assert.strictEqual(html, "");
 });
+
+test("ExtraImportantSettingsByContextProvider passes zone geometry to the injected component", () => {
+    const receivedProps: Array<Record<string, unknown>> = [];
+    function CapturingComponent(props: Record<string, unknown>) {
+        receivedProps.push(props);
+        return <div className="captured" />;
+    }
+
+    renderToStaticMarkup(
+        <ExtraImportantSettingsByContextProvider
+            provider={{ name: "kpath", material: { lattice: fccLattice } }}
+            description="BZ"
+            BrillouinZoneImageComponent={CapturingComponent}
+        />,
+    );
+
+    assert.strictEqual(receivedProps.length, 1);
+    const props = receivedProps[0];
+    assert.strictEqual(props.latticeType, "FCC");
+    // `faces` is present as a key regardless of the installed made version: components use it to
+    // draw the zone, and fall back to `imgSrc` when it is null (made without brillouinZone).
+    assert.ok("faces" in props, "faces prop is forwarded to the injected component");
+    if (props.faces) {
+        const faces = props.faces as Array<{ vertices: number[][]; normal: number[] }>;
+        // Face-centered cubic: a truncated octahedron, 8 hexagons plus 6 squares.
+        assert.strictEqual(faces.length, 14);
+        assert.strictEqual(faces.filter((face) => face.vertices.length === 6).length, 8);
+        assert.strictEqual(faces.filter((face) => face.vertices.length === 4).length, 6);
+    }
+});

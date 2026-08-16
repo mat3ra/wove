@@ -39,6 +39,10 @@ export interface NodeData {
     animateOnHover?: boolean;
     direction: Direction;
     label?: string;
+    /** Reveal the flowchart ID on the card; see `CardHeader`. */
+    showDeveloperInfo?: boolean;
+    /** Show the run-status badge; off in designers, on in job views. */
+    showStatus?: boolean;
 }
 
 export enum Direction {

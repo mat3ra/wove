@@ -21,6 +21,11 @@ export type PropertiesProps = {
     editable?: boolean;
 };
 
+/** `total_energy` → `Total energy`. The raw key stays available as the chip's tooltip. */
+export function humanizePropertyName(property: string): string {
+    return s.capitalize(String(property).replace(/_/g, " "));
+}
+
 export function Properties({ subworkflow, onUpdate, editable = true }: PropertiesProps) {
     const onIsDraftChange = useCallback(
         (bool: boolean) => {
@@ -30,10 +35,14 @@ export function Properties({ subworkflow, onUpdate, editable = true }: Propertie
         [subworkflow, onUpdate],
     );
 
-    const properties = subworkflow.properties.map((property, index) => (
+    // Several units in one subworkflow commonly report the same property — an scf and an nscf
+    // step both yield `fermi_energy` — and the subworkflow lists every occurrence, so the same
+    // chip would otherwise render twice with nothing to tell the copies apart.
+    const properties = _.uniq(subworkflow.properties).map((property) => (
         <Chip
-            label={property}
-            key={s.slugify(`${property}${index}`)}
+            label={humanizePropertyName(property)}
+            title={property}
+            key={s.slugify(property)}
             sx={{ fontSize: "12px", m: 0.5 }}
         />
     ));

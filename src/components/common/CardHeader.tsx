@@ -34,6 +34,17 @@ export interface CardHeaderProps {
     badgeColor?: string;
     isExpanded?: boolean;
     contentToCopy?: string;
+    /**
+     * Show the flowchart ID and its copy control. Off by default: the ID is a UUID that
+     * identifies nothing to a person reading a card, while repeating it under every unit
+     * costs most of a card's subheader. Hosts expose it behind a "developer info" toggle.
+     */
+    showDeveloperInfo?: boolean;
+    /**
+     * Show the run-status badge. Status belongs to a job's execution, so a designer editing
+     * a workflow template turns it off — there, every unit is perpetually "idle".
+     */
+    showStatus?: boolean;
 }
 
 export function CardHeader({
@@ -46,9 +57,11 @@ export function CardHeader({
     badgeColor = "default",
     isExpanded = false,
     contentToCopy,
+    showDeveloperInfo = false,
+    showStatus = true,
 }: CardHeaderProps) {
     const avatarVariant = avatarType === "roman" ? "rounded" : "circular";
-    const isBadge = avatarType !== "roman";
+    const isBadge = avatarType !== "roman" && showStatus;
     const safeBadgeColor = BADGE_COLORS.includes(badgeColor) ? badgeColor : "default";
 
     return (
@@ -58,7 +71,7 @@ export function CardHeader({
                     color={safeBadgeColor as any}
                     overlap="circular"
                     anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    title={s.capitalize(status)}
+                    title={showStatus ? s.capitalize(status) : ""}
                     badgeContent={isBadge && status ? <Box>{s.capitalize(status[0])}</Box> : null}
                 >
                     <StyledAvatar isBadge={isBadge} color={safeBadgeColor} variant={avatarVariant}>
@@ -100,31 +113,35 @@ export function CardHeader({
                 </Typography>
             }
             subheader={
-                <Subheader>
-                    {isExpanded ? (
-                        <Box>
-                            <Typography variant="caption" noWrap sx={{ width: "100%" }}>
-                                Flowchart ID:&nbsp;
+                showDeveloperInfo ? (
+                    <Subheader>
+                        {isExpanded ? (
+                            <Box>
+                                <Typography variant="caption" noWrap sx={{ width: "100%" }}>
+                                    Flowchart ID:&nbsp;
+                                </Typography>
+                            </Box>
+                        ) : null}
+                        <FlowchartIdContainer>
+                            <Typography variant="caption" noWrap>
+                                {subheader}
                             </Typography>
-                        </Box>
-                    ) : null}
-                    <FlowchartIdContainer>
-                        <Typography variant="caption" noWrap>
-                            {subheader}
-                        </Typography>
-                        <IconButton
-                            onClick={() =>
-                                copyToClipboardSafe(contentToCopy ?? "").then((ok: boolean) => {
-                                    if (ok) {
-                                        showSuccessAlert(`Unit ${title} was successfully copied`);
-                                    }
-                                })
-                            }
-                        >
-                            <IconByName name="actions.copy" />
-                        </IconButton>
-                    </FlowchartIdContainer>
-                </Subheader>
+                            <IconButton
+                                onClick={() =>
+                                    copyToClipboardSafe(contentToCopy ?? "").then((ok: boolean) => {
+                                        if (ok) {
+                                            showSuccessAlert(
+                                                `Unit ${title} was successfully copied`,
+                                            );
+                                        }
+                                    })
+                                }
+                            >
+                                <IconByName name="actions.copy" />
+                            </IconButton>
+                        </FlowchartIdContainer>
+                    </Subheader>
+                ) : null
             }
         />
     );

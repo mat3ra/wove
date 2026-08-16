@@ -27,13 +27,15 @@ function getHandlePositions(unitType: `${UnitType}`, direction: Direction): Hand
         TB: {
             source: Position.Bottom,
             target: Position.Top,
-            sourceHandleStyles: (handleStyles as Record<string, any>)[unitType] || defaultHandleStyle,
+            sourceHandleStyles:
+                (handleStyles as Record<string, any>)[unitType] || defaultHandleStyle,
             sourceHandleLabels: (handleLabels as Record<string, any>)[unitType] || undefined,
         },
         LR: {
             source: Position.Right,
             target: Position.Left,
-            sourceHandleStyles: (handleStyles as Record<string, any>)[unitType] || defaultHandleStyle,
+            sourceHandleStyles:
+                (handleStyles as Record<string, any>)[unitType] || defaultHandleStyle,
             sourceHandleLabels: (handleLabels as Record<string, any>)[unitType] || undefined,
         },
     };
@@ -52,6 +54,8 @@ export function useNodeData(data: NodeData) {
         actions,
         animateOnHover,
         direction = Direction.TB,
+        showDeveloperInfo,
+        showStatus,
     } = data;
 
     const handlePositions = getHandlePositions(unit.type, direction);
@@ -65,6 +69,8 @@ export function useNodeData(data: NodeData) {
         onSelect,
         actions,
         animateOnHover,
+        showDeveloperInfo,
+        showStatus,
         sourcePosition: source,
         targetPosition: target,
         sourceHandleStyles,

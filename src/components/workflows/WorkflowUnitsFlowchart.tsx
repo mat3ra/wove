@@ -18,6 +18,10 @@ export type WorkflowUnitsFlowchartProps = {
     onSubworkflowUnitUpdate?: (subworkflow: SubworkflowSchema) => void;
     ApplicationComponent?: React.ComponentType<any>;
     ModelComponent?: React.ComponentType<any>;
+    /** Reveal flowchart IDs on the cards; see `CardHeader`. */
+    showDeveloperInfo?: boolean;
+    /** Show run-status badges; off in designers, on in job views. */
+    showStatus?: boolean;
 };
 
 export function WorkflowUnitsFlowchart({
@@ -31,6 +35,8 @@ export function WorkflowUnitsFlowchart({
     onSubworkflowUnitUpdate,
     ApplicationComponent,
     ModelComponent,
+    showDeveloperInfo = false,
+    showStatus = true,
 }: WorkflowUnitsFlowchartProps) {
     const renderUnit = useCallback(
         (unit: any, index: number, sw: WodeSubworkflow | null) => {
@@ -39,6 +45,8 @@ export function WorkflowUnitsFlowchart({
                     <WorkflowUnitCard
                         headerStatusCls={headerStatusCls}
                         editable={editable}
+                        showDeveloperInfo={showDeveloperInfo}
+                        showStatus={showStatus}
                         subworkflow={sw ?? undefined}
                         onUpdate={onSubworkflowUnitUpdate}
                         onRemove={onUnitRemove ?? (() => undefined)}
@@ -72,7 +80,9 @@ export function WorkflowUnitsFlowchart({
         const unit = unitUntyped;
         let sw: WodeSubworkflow | null = null;
         if (unit.type === UnitType.subworkflow) {
-            sw = workflow.subworkflowInstances.find((s: WodeSubworkflow) => s.id === unit.id) ?? null;
+            sw =
+                workflow.subworkflowInstances.find((s: WodeSubworkflow) => s.id === unit.id) ??
+                null;
             if (sw) {
                 unit.name = sw.name;
             }
