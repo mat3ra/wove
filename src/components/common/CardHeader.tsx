@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import React from "react";
 import s from "underscore.string";
 
+import { useWoveDisplayOptions } from "../../context/displayOptions";
 import {
     ActionContainer,
     FlowchartIdContainer,
@@ -40,13 +41,16 @@ export interface CardHeaderProps {
      * the workflow, and it costs a line on every card to say nothing to them.
      *
      * Hosts expose it deliberately — a "Developer info" toggle in the designer —
-     * and the copy affordance stays available whenever it is shown.
+     * and the copy affordance stays available whenever it is shown. Usually set
+     * for the whole tree via {@link WoveDisplayOptionsProvider}; this prop
+     * overrides that for one card.
      */
     showDeveloperInfo?: boolean;
     /**
      * Shows the status badge on the avatar. Off by default: these cards are
      * shared between the designer, where nothing has run and every unit reports
      * a meaningless "idle", and job views, where status is the whole point.
+     * Overrides {@link WoveDisplayOptionsProvider} for one card.
      */
     showStatus?: boolean;
 }
@@ -61,15 +65,20 @@ export function CardHeader({
     badgeColor = "default",
     isExpanded = false,
     contentToCopy,
-    showDeveloperInfo = false,
-    showStatus = false,
+    showDeveloperInfo,
+    showStatus,
 }: CardHeaderProps) {
+    // Host-level defaults; an explicit prop still wins for a single card.
+    const displayOptions = useWoveDisplayOptions();
+    const isDeveloperInfoShown = showDeveloperInfo ?? displayOptions.showDeveloperInfo;
+    const isStatusShown = showStatus ?? displayOptions.showStatus;
+
     const avatarVariant = avatarType === "roman" ? "rounded" : "circular";
-    const isBadge = avatarType !== "roman" && showStatus;
+    const isBadge = avatarType !== "roman" && isStatusShown;
     const safeBadgeColor = BADGE_COLORS.includes(badgeColor) ? badgeColor : "default";
     // The id row is the only thing in the subheader, so when it is hidden the
     // subheader goes with it rather than leaving an empty line under the title.
-    const isSubheaderShown = showDeveloperInfo && Boolean(subheader);
+    const isSubheaderShown = isDeveloperInfoShown && Boolean(subheader);
 
     return (
         <StyledCardHeader
@@ -78,7 +87,7 @@ export function CardHeader({
                     color={safeBadgeColor as any}
                     overlap="circular"
                     anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    title={showStatus ? s.capitalize(status) : ""}
+                    title={isStatusShown ? s.capitalize(status) : ""}
                     badgeContent={isBadge && status ? <Box>{s.capitalize(status[0])}</Box> : null}
                 >
                     <StyledAvatar isBadge={isBadge} color={safeBadgeColor} variant={avatarVariant}>

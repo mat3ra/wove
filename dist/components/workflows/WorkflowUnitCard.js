@@ -12,7 +12,7 @@ import { UnitsAccordion } from "../units/UnitsAccordion";
 import { OverviewAccordion } from "./OverviewAccordion";
 import { CardFooter } from "../common/CardFooter";
 import { CardHeader } from "../common/CardHeader";
-export function WorkflowUnitCard({ index, unit, isSelected = false, onClick, isRemovable = false, onRemove, subworkflow, isCardContentExpanded = true, editable = false, headerStatusCls, onUpdate, onApplicationUpdate, onModelUpdate, ApplicationComponent, ModelComponent, showDeveloperInfo = false, showStatus = false, }) {
+export function WorkflowUnitCard({ index, unit, isSelected = false, onClick, isRemovable = false, onRemove, subworkflow, isCardContentExpanded = true, editable = false, headerStatusCls, onUpdate, onApplicationUpdate, onModelUpdate, ApplicationComponent, ModelComponent, showDeveloperInfo, showStatus, }) {
     var _a;
     const theme = useTheme();
     const copyToClipboard = useCopyToClipboard();

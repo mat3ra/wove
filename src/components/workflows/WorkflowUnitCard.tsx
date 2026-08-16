@@ -55,8 +55,8 @@ export function WorkflowUnitCard({
     onModelUpdate,
     ApplicationComponent,
     ModelComponent,
-    showDeveloperInfo = false,
-    showStatus = false,
+    showDeveloperInfo,
+    showStatus,
 }: WorkflowUnitCardProps) {
     const theme = useTheme();
     const copyToClipboard = useCopyToClipboard();

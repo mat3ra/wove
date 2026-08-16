@@ -12,16 +12,21 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import s from "underscore.string";
+import { useWoveDisplayOptions } from "../../context/displayOptions";
 import { ActionContainer, FlowchartIdContainer, StyledAvatar, StyledBadge, StyledCardHeader, Subheader, } from "./CardHeader.styled";
 const BADGE_COLORS = ["primary", "secondary", "default", "error", "info", "success", "warning"];
-export function CardHeader({ title = "", subheader = "", avatarIndex, avatarType = "arabic", actions = [], status = "", badgeColor = "default", isExpanded = false, contentToCopy, showDeveloperInfo = false, showStatus = false, }) {
+export function CardHeader({ title = "", subheader = "", avatarIndex, avatarType = "arabic", actions = [], status = "", badgeColor = "default", isExpanded = false, contentToCopy, showDeveloperInfo, showStatus, }) {
+    // Host-level defaults; an explicit prop still wins for a single card.
+    const displayOptions = useWoveDisplayOptions();
+    const isDeveloperInfoShown = showDeveloperInfo !== null && showDeveloperInfo !== void 0 ? showDeveloperInfo : displayOptions.showDeveloperInfo;
+    const isStatusShown = showStatus !== null && showStatus !== void 0 ? showStatus : displayOptions.showStatus;
     const avatarVariant = avatarType === "roman" ? "rounded" : "circular";
-    const isBadge = avatarType !== "roman" && showStatus;
+    const isBadge = avatarType !== "roman" && isStatusShown;
     const safeBadgeColor = BADGE_COLORS.includes(badgeColor) ? badgeColor : "default";
     // The id row is the only thing in the subheader, so when it is hidden the
     // subheader goes with it rather than leaving an empty line under the title.
-    const isSubheaderShown = showDeveloperInfo && Boolean(subheader);
-    return (_jsx(StyledCardHeader, { avatar: _jsx(StyledBadge, { color: safeBadgeColor, overlap: "circular", anchorOrigin: { vertical: "bottom", horizontal: "right" }, title: showStatus ? s.capitalize(status) : "", badgeContent: isBadge && status ? _jsx(Box, { children: s.capitalize(status[0]) }) : null, children: _jsx(StyledAvatar, { isBadge: isBadge, color: safeBadgeColor, variant: avatarVariant, children: avatarIndex }) }), action: !isExpanded &&
+    const isSubheaderShown = isDeveloperInfoShown && Boolean(subheader);
+    return (_jsx(StyledCardHeader, { avatar: _jsx(StyledBadge, { color: safeBadgeColor, overlap: "circular", anchorOrigin: { vertical: "bottom", horizontal: "right" }, title: isStatusShown ? s.capitalize(status) : "", badgeContent: isBadge && status ? _jsx(Box, { children: s.capitalize(status[0]) }) : null, children: _jsx(StyledAvatar, { isBadge: isBadge, color: safeBadgeColor, variant: avatarVariant, children: avatarIndex }) }), action: !isExpanded &&
             Boolean(actions.length) && (_jsx(ActionContainer, { children: _jsx(Dropdown, { popperProps: {
                     id: "popper",
                     modifiers: [

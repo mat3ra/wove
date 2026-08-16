@@ -10,7 +10,7 @@ const statusToColorEnum = {
     error: "error",
     finished: "success",
 };
-export function UnitCard({ index, unit, actions = [], isSelected = false, isBorder = true, onSelect = () => undefined, animateOnHover = false, isCardContentExpanded = true, showDeveloperInfo = false, showStatus = false, }) {
+export function UnitCard({ index, unit, actions = [], isSelected = false, isBorder = true, onSelect = () => undefined, animateOnHover = false, isCardContentExpanded = true, showDeveloperInfo, showStatus, }) {
     var _a, _b, _c;
     const onCardClick = (e) => {
         if (!e.defaultPrevented)

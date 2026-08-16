@@ -6,6 +6,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { CardHeader } from "../src/components/common/CardHeader";
+import { WoveDisplayOptionsProvider } from "../src/context/displayOptions";
 
 const FLOWCHART_ID = "6ad0fa11-2db6-51ab-8ff9-638ed36d60b2";
 
@@ -49,6 +50,32 @@ test("the title is always rendered, in both modes", () => {
     // Guard against hiding the thing the card is actually for.
     assert.ok(render().includes("pw_scf"));
     assert.ok(render({ showDeveloperInfo: true, showStatus: true }).includes("pw_scf"));
+});
+
+test("a host can set the defaults for the whole tree", () => {
+    // The realistic path: a designer or job view wraps its tree once, rather than
+    // threading a prop down through reactflow node data to every card.
+    const markup = renderToStaticMarkup(
+        <WoveDisplayOptionsProvider showDeveloperInfo showStatus>
+            <CardHeader title="pw_scf" subheader={FLOWCHART_ID} status="active" avatarIndex="01" />
+        </WoveDisplayOptionsProvider>,
+    );
+    assert.ok(markup.includes(FLOWCHART_ID), "expected the provider to switch ids on");
+    assert.ok(/\bActive\b/.test(markup), "expected the provider to switch status on");
+});
+
+test("an explicit prop still wins over the host default", () => {
+    const markup = renderToStaticMarkup(
+        <WoveDisplayOptionsProvider showDeveloperInfo>
+            <CardHeader
+                title="pw_scf"
+                subheader={FLOWCHART_ID}
+                avatarIndex="01"
+                showDeveloperInfo={false}
+            />
+        </WoveDisplayOptionsProvider>,
+    );
+    assert.ok(!markup.includes(FLOWCHART_ID), "expected the prop to override the provider");
 });
 
 test("hiding the id leaves no empty subheader behind", () => {

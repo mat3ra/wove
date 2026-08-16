@@ -41,8 +41,8 @@ export function UnitCard({
     onSelect = () => undefined,
     animateOnHover = false,
     isCardContentExpanded = true,
-    showDeveloperInfo = false,
-    showStatus = false,
+    showDeveloperInfo,
+    showStatus,
 }: UnitCardProps) {
     const onCardClick = (e: React.MouseEvent) => {
         if (!e.defaultPrevented) onSelect(unit);
