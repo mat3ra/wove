@@ -34,6 +34,21 @@ export interface CardHeaderProps {
     badgeColor?: string;
     isExpanded?: boolean;
     contentToCopy?: string;
+    /**
+     * Shows the flowchart id under the title. Off by default: an opaque UUID on
+     * every card is addressed to whoever is debugging, not to the person reading
+     * the workflow, and it costs a line on every card to say nothing to them.
+     *
+     * Hosts expose it deliberately — a "Developer info" toggle in the designer —
+     * and the copy affordance stays available whenever it is shown.
+     */
+    showDeveloperInfo?: boolean;
+    /**
+     * Shows the status badge on the avatar. Off by default: these cards are
+     * shared between the designer, where nothing has run and every unit reports
+     * a meaningless "idle", and job views, where status is the whole point.
+     */
+    showStatus?: boolean;
 }
 
 export function CardHeader({
@@ -46,10 +61,15 @@ export function CardHeader({
     badgeColor = "default",
     isExpanded = false,
     contentToCopy,
+    showDeveloperInfo = false,
+    showStatus = false,
 }: CardHeaderProps) {
     const avatarVariant = avatarType === "roman" ? "rounded" : "circular";
-    const isBadge = avatarType !== "roman";
+    const isBadge = avatarType !== "roman" && showStatus;
     const safeBadgeColor = BADGE_COLORS.includes(badgeColor) ? badgeColor : "default";
+    // The id row is the only thing in the subheader, so when it is hidden the
+    // subheader goes with it rather than leaving an empty line under the title.
+    const isSubheaderShown = showDeveloperInfo && Boolean(subheader);
 
     return (
         <StyledCardHeader
@@ -58,7 +78,7 @@ export function CardHeader({
                     color={safeBadgeColor as any}
                     overlap="circular"
                     anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    title={s.capitalize(status)}
+                    title={showStatus ? s.capitalize(status) : ""}
                     badgeContent={isBadge && status ? <Box>{s.capitalize(status[0])}</Box> : null}
                 >
                     <StyledAvatar isBadge={isBadge} color={safeBadgeColor} variant={avatarVariant}>
@@ -100,31 +120,35 @@ export function CardHeader({
                 </Typography>
             }
             subheader={
-                <Subheader>
-                    {isExpanded ? (
-                        <Box>
-                            <Typography variant="caption" noWrap sx={{ width: "100%" }}>
-                                Flowchart ID:&nbsp;
+                !isSubheaderShown ? null : (
+                    <Subheader>
+                        {isExpanded ? (
+                            <Box>
+                                <Typography variant="caption" noWrap sx={{ width: "100%" }}>
+                                    Flowchart ID:&nbsp;
+                                </Typography>
+                            </Box>
+                        ) : null}
+                        <FlowchartIdContainer>
+                            <Typography variant="caption" noWrap>
+                                {subheader}
                             </Typography>
-                        </Box>
-                    ) : null}
-                    <FlowchartIdContainer>
-                        <Typography variant="caption" noWrap>
-                            {subheader}
-                        </Typography>
-                        <IconButton
-                            onClick={() =>
-                                copyToClipboardSafe(contentToCopy ?? "").then((ok: boolean) => {
-                                    if (ok) {
-                                        showSuccessAlert(`Unit ${title} was successfully copied`);
-                                    }
-                                })
-                            }
-                        >
-                            <IconByName name="actions.copy" />
-                        </IconButton>
-                    </FlowchartIdContainer>
-                </Subheader>
+                            <IconButton
+                                onClick={() =>
+                                    copyToClipboardSafe(contentToCopy ?? "").then((ok: boolean) => {
+                                        if (ok) {
+                                            showSuccessAlert(
+                                                `Unit ${title} was successfully copied`,
+                                            );
+                                        }
+                                    })
+                                }
+                            >
+                                <IconByName name="actions.copy" />
+                            </IconButton>
+                        </FlowchartIdContainer>
+                    </Subheader>
+                )
             }
         />
     );
