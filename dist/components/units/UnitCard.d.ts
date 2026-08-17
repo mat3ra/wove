@@ -14,5 +14,7 @@ export type UnitCardProps = {
     showDeveloperInfo?: boolean;
     /** Show the run-status badge; off in designers, on in job views. */
     showStatus?: boolean;
+    /** Something in this unit differs from its default; hosts derive it from `provider.isEdited`. */
+    isModified?: boolean;
 };
-export declare function UnitCard({ index, unit, actions, isSelected, isBorder, onSelect, animateOnHover, isCardContentExpanded, showDeveloperInfo, showStatus, }: UnitCardProps): React.JSX.Element;
+export declare function UnitCard({ index, unit, actions, isSelected, isBorder, onSelect, animateOnHover, isCardContentExpanded, showDeveloperInfo, showStatus, isModified, }: UnitCardProps): React.JSX.Element;
