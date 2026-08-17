@@ -33,6 +33,10 @@ export type WorkflowUnitCardProps = {
     onModelUpdate?: (...args: unknown[]) => void;
     ApplicationComponent?: React.ComponentType<any>;
     ModelComponent?: React.ComponentType<any>;
+    /** See {@link CardHeaderProps.showDeveloperInfo}. */
+    showDeveloperInfo?: boolean;
+    /** See {@link CardHeaderProps.showStatus}. */
+    showStatus?: boolean;
 };
 
 export function WorkflowUnitCard({
@@ -51,6 +55,8 @@ export function WorkflowUnitCard({
     onModelUpdate,
     ApplicationComponent,
     ModelComponent,
+    showDeveloperInfo,
+    showStatus,
 }: WorkflowUnitCardProps) {
     const theme = useTheme();
     const copyToClipboard = useCopyToClipboard();
@@ -129,6 +135,8 @@ export function WorkflowUnitCard({
                     actions={actions}
                     isExpanded={isCardContentExpanded}
                     contentToCopy={contentToCopy}
+                    showDeveloperInfo={showDeveloperInfo}
+                    showStatus={showStatus}
                 />
                 {isCardContentExpanded && (
                     <>

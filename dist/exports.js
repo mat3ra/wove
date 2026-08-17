@@ -9,4 +9,5 @@ export { default as UnitsFlowchartContainer } from "./components/units/UnitsFlow
 export { WORKFLOW_STATUS_COLOR, WORKFLOW_STATUS_TEXT } from "./settings";
 export { getUnitStatusCls, getWorkflowStatusCls } from "./components/units/utils";
 export { ExtraImportantSettingsByContextProvider } from "./context/utils";
+export { WoveDisplayOptionsProvider, useWoveDisplayOptions } from "./context/displayOptions";
 export { Properties } from "./components/subworkflows/Properties";

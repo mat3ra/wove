@@ -26,6 +26,10 @@ export type UnitCardProps = {
     onSelect?: (unit: AnySubworkflowUnitSchema) => void;
     animateOnHover?: boolean;
     isCardContentExpanded?: boolean;
+    /** See {@link CardHeaderProps.showDeveloperInfo}. */
+    showDeveloperInfo?: boolean;
+    /** See {@link CardHeaderProps.showStatus}. */
+    showStatus?: boolean;
 };
 
 export function UnitCard({
@@ -37,6 +41,8 @@ export function UnitCard({
     onSelect = () => undefined,
     animateOnHover = false,
     isCardContentExpanded = true,
+    showDeveloperInfo,
+    showStatus,
 }: UnitCardProps) {
     const onCardClick = (e: React.MouseEvent) => {
         if (!e.defaultPrevented) onSelect(unit);
@@ -51,7 +57,8 @@ export function UnitCard({
             elevation={0}
             isAnimateOnHover={animateOnHover}
             isBorder={isBorder}
-            onClick={onCardClick}>
+            onClick={onCardClick}
+        >
             <InnerContainer isSelected={isSelected} type={unit.type} isTypeColor>
                 <CardHeader
                     title={unit.name}
@@ -62,6 +69,8 @@ export function UnitCard({
                     badgeColor={statusToColorEnum[unit.status ?? "idle"] ?? "default"}
                     isExpanded={isCardContentExpanded && Boolean(actions.length)}
                     contentToCopy={unit.flowchartId}
+                    showDeveloperInfo={showDeveloperInfo}
+                    showStatus={showStatus}
                 />
                 {isCardContentExpanded && Boolean(actions.length) && (
                     <>
