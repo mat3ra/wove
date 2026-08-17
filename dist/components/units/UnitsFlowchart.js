@@ -1,4 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import Box from "@mui/material/Box";
+import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import ReactFlow, { applyEdgeChanges, applyNodeChanges, Background, Controls, useReactFlow, } from "reactflow";
 import { nodeTypes } from "../reactflow/customNodes/NodeTypes";
@@ -12,6 +14,7 @@ function UnitsFlowchart(props) {
     const [edges, setEdges] = useState([]);
     const [nodesAndEdgesUpdated, setNodesAndEdgesUpdated] = useState(false);
     const { fitView } = useReactFlow();
+    const theme = useTheme();
     useAutoLayout({ direction, nodesAndEdgesUpdated });
     const onNodesChange = (changes) => {
         setNodes((nodes) => applyNodeChanges(changes, nodes));
@@ -79,6 +82,28 @@ function UnitsFlowchart(props) {
             fitView({ duration: 400 });
         }
     }, [fitView, nodes, autoFitToView]);
-    return (_jsxs(ReactFlow, { nodes: nodes, edges: edges, onNodesChange: onNodesChange, onEdgesChange: onEdgesChange, nodeTypes: nodeTypes, nodeOrigin: [0.5, 0.5], proOptions: { hideAttribution: true }, preventScrolling: isFocused, zoomOnScroll: isFocused, minZoom: 0.2, fitView: true, children: [_jsx(Background, { gap: 16, size: 0.5, color: "000" }), _jsx(Controls, {})] }));
+    return (
+    // reactflow's stylesheet paints the pane and its control buttons white and
+    // their glyphs near-black, so a dark host framed a white canvas with
+    // invisible controls. The library exposes those as CSS variables and
+    // element classes rather than props, which is why this is `sx` on a
+    // wrapper rather than a prop on <ReactFlow>.
+    _jsx(Box, { sx: {
+            height: "100%",
+            bgcolor: "background.default",
+            "& .react-flow__controls-button": {
+                backgroundColor: "background.paper",
+                borderBottomColor: "divider",
+                color: "text.primary",
+                fill: "currentColor",
+                "&:hover": { backgroundColor: "action.hover" },
+            },
+            "& .react-flow__controls-button svg": { fill: "currentColor" },
+            "& .react-flow__edge-path": { stroke: theme.palette.text.disabled },
+            "& .react-flow__handle": {
+                backgroundColor: theme.palette.text.disabled,
+                borderColor: theme.palette.background.paper,
+            },
+        }, children: _jsxs(ReactFlow, { nodes: nodes, edges: edges, onNodesChange: onNodesChange, onEdgesChange: onEdgesChange, nodeTypes: nodeTypes, nodeOrigin: [0.5, 0.5], proOptions: { hideAttribution: true }, preventScrolling: isFocused, zoomOnScroll: isFocused, minZoom: 0.2, fitView: true, children: [_jsx(Background, { gap: 16, size: 0.5, color: theme.palette.text.disabled }), _jsx(Controls, {})] }) }));
 }
 export default UnitsFlowchart;

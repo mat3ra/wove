@@ -1,4 +1,6 @@
 import type { AnySubworkflowUnitSchema } from "@mat3ra/wode/dist/js/units/factory";
+import Box from "@mui/material/Box";
+import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import ReactFlow, {
     applyEdgeChanges,
@@ -45,6 +47,7 @@ function UnitsFlowchart(props: Props) {
     const [edges, setEdges] = useState<NativeEdge[]>([]);
     const [nodesAndEdgesUpdated, setNodesAndEdgesUpdated] = useState(false);
     const { fitView } = useReactFlow();
+    const theme = useTheme();
 
     useAutoLayout({ direction, nodesAndEdgesUpdated });
 
@@ -119,21 +122,50 @@ function UnitsFlowchart(props: Props) {
     }, [fitView, nodes, autoFitToView]);
 
     return (
-        <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            nodeTypes={nodeTypes}
-            nodeOrigin={[0.5, 0.5]}
-            proOptions={{ hideAttribution: true }}
-            preventScrolling={isFocused}
-            zoomOnScroll={isFocused}
-            minZoom={0.2}
-            fitView>
-            <Background gap={16} size={0.5} color="000" />
-            <Controls />
-        </ReactFlow>
+        // reactflow's stylesheet paints the pane and its control buttons white and
+        // their glyphs near-black, so a dark host framed a white canvas with
+        // invisible controls. The library exposes those as CSS variables and
+        // element classes rather than props, which is why this is `sx` on a
+        // wrapper rather than a prop on <ReactFlow>.
+        <Box
+            sx={{
+                height: "100%",
+                bgcolor: "background.default",
+                "& .react-flow__controls-button": {
+                    backgroundColor: "background.paper",
+                    borderBottomColor: "divider",
+                    color: "text.primary",
+                    fill: "currentColor",
+                    "&:hover": { backgroundColor: "action.hover" },
+                },
+                "& .react-flow__controls-button svg": { fill: "currentColor" },
+                "& .react-flow__edge-path": { stroke: theme.palette.text.disabled },
+                "& .react-flow__handle": {
+                    backgroundColor: theme.palette.text.disabled,
+                    borderColor: theme.palette.background.paper,
+                },
+            }}
+        >
+            <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
+                nodeTypes={nodeTypes}
+                nodeOrigin={[0.5, 0.5]}
+                proOptions={{ hideAttribution: true }}
+                preventScrolling={isFocused}
+                zoomOnScroll={isFocused}
+                minZoom={0.2}
+                fitView
+            >
+                {/* The dot colour was the literal string "000", which is not a valid
+                CSS colour — the grid fell back to reactflow's light-theme default
+                and vanished on a dark surface. */}
+                <Background gap={16} size={0.5} color={theme.palette.text.disabled} />
+                <Controls />
+            </ReactFlow>
+        </Box>
     );
 }
 
