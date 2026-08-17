@@ -41,7 +41,19 @@ function DefaultBrillouinZoneImage({ imgSrc, description }: BrillouinZoneImagePr
     );
 }
 
-const POINTS_PATH_PROVIDER_NAMES = ["kpath", "qpath", "explicitKPath"] as const;
+/**
+ * Every concrete subclass of wode's `PointsPathFormDataProvider`. All five edit a path through
+ * reciprocal space and all five want the zone drawn beside the form; leaving two of them out
+ * meant Phonon Dispersions and the GW band-structure workflows showed a path with no picture.
+ * Keep in step with `@mat3ra/wode` `context/providers/PointsPath/`.
+ */
+const POINTS_PATH_PROVIDER_NAMES = [
+    "kpath",
+    "qpath",
+    "ipath",
+    "explicitKPath",
+    "explicitKPath2PIBA",
+] as const;
 
 type PointsPathLikeProvider = {
     name: (typeof POINTS_PATH_PROVIDER_NAMES)[number];
@@ -58,8 +70,9 @@ interface ExtraComponentProps {
 // Use the provider's schema `name`, not `instanceof`: job/workflow units are built via
 // Meteor-compiled `@mat3ra/wode` (see `rspack.config.js` `compileWithMeteor`); wove UI may
 // resolve another copy of the same class, so `instanceof PointsPathFormDataProvider` is false
-// even for a real kpath/qpath/explicitKPath provider (mirrors `isExecutionUnit` in
-// workflow-designer's `ImportantSettings.tsx`, which hit the same issue for `ExecutionUnit`).
+// even for a real points-path provider (mirrors `isExecutionUnit` in workflow-designer's
+// `ImportantSettings.tsx`, which hit the same issue for `ExecutionUnit`). The cost is that the
+// list above has to be kept complete by hand.
 function isPointsPathProvider(provider: unknown): provider is PointsPathLikeProvider {
     return (
         typeof provider === "object" &&

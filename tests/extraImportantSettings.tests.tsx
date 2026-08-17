@@ -43,6 +43,18 @@ test("ExtraImportantSettingsByContextProvider renders Brillouin zone image for k
     assert.match(html, /alt="BZ"/);
 });
 
+test("every points-path provider gets the zone, not only kpath", () => {
+    ["kpath", "qpath", "ipath", "explicitKPath", "explicitKPath2PIBA"].forEach((name) => {
+        const html = renderToStaticMarkup(
+            <ExtraImportantSettingsByContextProvider
+                provider={{ name, material: { lattice: fccLattice } }}
+                description="BZ"
+            />,
+        );
+        assert.match(html, /wove-default-brillouin-zone/, `${name} renders the zone`);
+    });
+});
+
 test("ExtraImportantSettingsByContextProvider returns null for non-points-path providers", () => {
     const html = renderToStaticMarkup(
         <ExtraImportantSettingsByContextProvider
