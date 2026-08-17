@@ -12,6 +12,10 @@ type ReduxDialogState<_D extends WoveDialogType = WoveDialogType> = [
 /** Opaque replacement for CorePropertyHolder — actual instances are passed as-is. */
 type CorePropertyHolder = unknown;
 export type UnitsFlowchartContainerProps = {
+    /** Reveal flowchart IDs on unit cards; see `CardHeader`. */
+    showDeveloperInfo?: boolean;
+    /** Show run-status badges; off in designers, on in job views. */
+    showStatus?: boolean;
     units: any[];
     unitIndex: number;
     onUnitSelect: (unit: AnySubworkflowUnitSchema) => void;
@@ -33,5 +37,5 @@ export type UnitsFlowchartContainerProps = {
     subworkflow?: Subworkflow;
     UnitModalComponent?: React.ComponentType<any>;
 };
-export default function UnitsFlowchartContainer({ subworkflow: _subworkflow, editable, adjustable, units, unitIndex, onUnitSelect, onUnitAdd, onUnitRemove, onUnitUpdate, onUnitClone, isStandalone, materials, materialsIndex, onMaterialSwitch, onOutputUpdateRequest, publicAccount, jobProperties, unitTypeReduxDialog, UnitModalComponent, }: UnitsFlowchartContainerProps): React.JSX.Element;
+export default function UnitsFlowchartContainer({ subworkflow: _subworkflow, editable, adjustable, units, unitIndex, onUnitSelect, onUnitAdd, onUnitRemove, onUnitUpdate, onUnitClone, isStandalone, materials, materialsIndex, onMaterialSwitch, onOutputUpdateRequest, publicAccount, jobProperties, unitTypeReduxDialog, UnitModalComponent, showDeveloperInfo, showStatus, }: UnitsFlowchartContainerProps): React.JSX.Element;
 export {};

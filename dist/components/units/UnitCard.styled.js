@@ -1,5 +1,21 @@
 import Card from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
+/**
+ * Border colours for a unit card.
+ *
+ * The resting border is meant to be invisible: it reserves the width the selected border takes,
+ * so selecting a card does not shift it. It was the literal string `"white"`, which is only
+ * invisible on a white surface — on a dark canvas every unselected card wore a bright frame.
+ * It now follows the surface the card sits on.
+ */
+export function getUnitCardBorderColors(theme) {
+    var _a, _b, _c, _d, _e;
+    const { designer } = theme;
+    return {
+        resting: (_c = (_b = (_a = designer === null || designer === void 0 ? void 0 : designer.node) === null || _a === void 0 ? void 0 : _a.background) !== null && _b !== void 0 ? _b : theme.palette.background.paper) !== null && _c !== void 0 ? _c : "white",
+        selected: (_e = (_d = designer === null || designer === void 0 ? void 0 : designer.canvas) === null || _d === void 0 ? void 0 : _d.selection) !== null && _e !== void 0 ? _e : theme.palette.primary.dark,
+    };
+}
 export const StyledCard = styled(Card, {
     shouldForwardProp: (prop) => prop !== "isAnimateOnHover" && prop !== "isBorder",
 })(({ theme, isAnimateOnHover, isBorder }) => {
@@ -23,11 +39,18 @@ export const StyledCard = styled(Card, {
             : undefined,
     });
 });
-export const InnerContainer = styled("div")(({ theme, type = "", isSelected, isTypeColor }) => {
+export const InnerContainer = styled("div")(({ theme, type = "", isSelected, isTypeColor, }) => {
+    var _a, _b, _c, _d, _e;
     const { palette } = theme;
     const { unitTypes } = palette;
+    const { designer } = theme;
+    // The unselected border is meant to be invisible — it reserves the width the selected
+    // one takes, so selecting a card does not shift it. Hardcoded white, it was a bright
+    // frame around every card on a dark canvas.
+    const restingBorderColor = (_c = (_b = (_a = designer === null || designer === void 0 ? void 0 : designer.node) === null || _a === void 0 ? void 0 : _a.background) !== null && _b !== void 0 ? _b : palette.background.paper) !== null && _c !== void 0 ? _c : "white";
+    const selectedBorderColor = (_e = (_d = designer === null || designer === void 0 ? void 0 : designer.canvas) === null || _d === void 0 ? void 0 : _d.selection) !== null && _e !== void 0 ? _e : palette.primary.dark;
     return {
-        border: isSelected ? `4px solid ${palette.primary.dark}` : "4px solid white",
+        border: `4px solid ${isSelected ? selectedBorderColor : restingBorderColor}`,
         borderRadius: 4,
         display: "flex",
         flexDirection: "column",

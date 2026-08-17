@@ -11,8 +11,8 @@ const CardContainer = styled(Box)(() => ({
 }));
 function UnitNode(props) {
     const { data } = props;
-    const { index, isCardContentExpanded, unit, isSelected, onSelect, actions, animateOnHover, sourcePosition, targetPosition, sourceHandleStyles, sourceHandleLabels, } = useNodeData(data);
-    return (_jsxs(CardContainer, { children: [_jsx(Handle, { type: "target", position: targetPosition }), _jsx(UnitCard, { index: index, isCardContentExpanded: isCardContentExpanded, unit: unit, isSelected: isSelected, onSelect: (unit) => onSelect(unit), actions: actions, animateOnHover: animateOnHover }), sourceHandleStyles.map((style, i) => (_jsx(Handle
+    const { index, isCardContentExpanded, unit, isSelected, onSelect, actions, animateOnHover, sourcePosition, targetPosition, sourceHandleStyles, sourceHandleLabels, showDeveloperInfo, showStatus, } = useNodeData(data);
+    return (_jsxs(CardContainer, { children: [_jsx(Handle, { type: "target", position: targetPosition }), _jsx(UnitCard, { index: index, isCardContentExpanded: isCardContentExpanded, unit: unit, isSelected: isSelected, onSelect: (unit) => onSelect(unit), actions: actions, animateOnHover: animateOnHover, showDeveloperInfo: showDeveloperInfo, showStatus: showStatus }), sourceHandleStyles.map((style, i) => (_jsx(Handle
             // eslint-disable-next-line react/no-array-index-key
             , { type: "source", position: sourcePosition, style: style, id: sourceHandleLabels === null || sourceHandleLabels === void 0 ? void 0 : sourceHandleLabels[i] }, i)))] }));
 }

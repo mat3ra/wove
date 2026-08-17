@@ -7,6 +7,8 @@ interface Props {
     onUnitSelect: (unit: AnySubworkflowUnitSchema) => void;
     areUnitsExpanded: boolean;
     getActions: (unit: AnySubworkflowUnitSchema, index: number) => Action[];
+    showDeveloperInfo?: boolean;
+    showStatus?: boolean;
 }
 export declare function transformUnitsToNodesAndEdges(props: Props): {
     nodes: import("../../units/types").Node[];

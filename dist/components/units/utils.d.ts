@@ -15,5 +15,8 @@ export declare function getWorkflowAggregateStatus(units: readonly AnySubworkflo
 /** Badge color key for {@link getWorkflowAggregateStatus} (via {@link getUnitStatusCls}). */
 export declare function getWorkflowStatusCls(units: readonly AnySubworkflowUnitSchema[]): string;
 export declare const createEdge: (source: string, target: string, sourceHandle: string | undefined, label: string | undefined) => Edge;
-export declare const createUnitNode: (unit: AnySubworkflowUnitSchema, index: number, direction: Direction, isSelected: boolean, onUnitSelect: (unit: AnySubworkflowUnitSchema) => void, areUnitsExpanded: boolean, getActions: Function) => Node;
+export declare const createUnitNode: (unit: AnySubworkflowUnitSchema, index: number, direction: Direction, isSelected: boolean, onUnitSelect: (unit: AnySubworkflowUnitSchema) => void, areUnitsExpanded: boolean, getActions: Function, cardOptions?: {
+    showDeveloperInfo?: boolean;
+    showStatus?: boolean;
+}) => Node;
 export declare const createStartEndNode: (id: string, label: string, direction: Direction) => Node;

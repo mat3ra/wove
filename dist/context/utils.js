@@ -5,34 +5,73 @@ function DefaultBrillouinZoneImage({ imgSrc, description }) {
         return null;
     return (_jsx("img", { className: "wove-default-brillouin-zone", src: imgSrc, alt: description || "Brillouin zone", style: { maxWidth: "100%" } }));
 }
-const POINTS_PATH_PROVIDER_NAMES = ["kpath", "qpath", "explicitKPath"];
+/**
+ * Every concrete subclass of wode's `PointsPathFormDataProvider`. All five edit a path through
+ * reciprocal space and all five want the zone drawn beside the form; leaving two of them out
+ * meant Phonon Dispersions and the GW band-structure workflows showed a path with no picture.
+ * Keep in step with `@mat3ra/wode` `context/providers/PointsPath/`.
+ */
+const POINTS_PATH_PROVIDER_NAMES = [
+    "kpath",
+    "qpath",
+    "ipath",
+    "explicitKPath",
+    "explicitKPath2PIBA",
+];
 // Use the provider's schema `name`, not `instanceof`: job/workflow units are built via
 // Meteor-compiled `@mat3ra/wode` (see `rspack.config.js` `compileWithMeteor`); wove UI may
 // resolve another copy of the same class, so `instanceof PointsPathFormDataProvider` is false
-// even for a real kpath/qpath/explicitKPath provider (mirrors `isExecutionUnit` in
-// workflow-designer's `ImportantSettings.tsx`, which hit the same issue for `ExecutionUnit`).
+// even for a real points-path provider (mirrors `isExecutionUnit` in workflow-designer's
+// `ImportantSettings.tsx`, which hit the same issue for `ExecutionUnit`). The cost is that the
+// list above has to be kept complete by hand.
 function isPointsPathProvider(provider) {
     return (typeof provider === "object" &&
         provider !== null &&
         POINTS_PATH_PROVIDER_NAMES.includes(provider.name));
 }
 /**
+ * Zone geometry for a material, from its own reciprocal lattice.
+ *
+ * Feature-detected rather than imported directly: `ReciprocalLattice.brillouinZone` arrives in
+ * made 2026.8+, and wove still has to build against older pins. Returns null there, leaving
+ * `imgSrc` as the only option.
+ */
+function getBrillouinZoneFacesFromMaterial(material) {
+    var _a;
+    const { ReciprocalLattice } = Made;
+    if (!ReciprocalLattice)
+        return null;
+    try {
+        return (_a = new ReciprocalLattice(material.lattice).brillouinZone) !== null && _a !== void 0 ? _a : null;
+    }
+    catch (_b) {
+        return null;
+    }
+}
+/**
  * Resolve lattice type + Brillouin-zone image path from a points-path provider material.
  * Prefer schema `lattice` JSON over Material getters (`Lattice` / `getLattice`) so this works
  * across made API renames and plain material configs.
+ *
+ * The `imgSrc` here points at a web-app public path that no package ships, so consumers other
+ * than the web app render a broken image, and it cannot resolve under a non-root deployment
+ * base either. It is kept only for hosts that do serve those assets; everyone else should draw
+ * the zone from the `faces` geometry passed alongside it.
  */
 export function getBrillouinZoneImagePropsFromMaterial(material) {
     const lattice = new Made.Lattice(material.lattice);
     const latticeTypeExtended = lattice.typeExtended;
     return {
         latticeType: lattice.type,
+        // Legacy: web-app-only asset; see JSDoc above.
         imgSrc: `/images/brillouin_zone/${latticeTypeExtended.toLowerCase().replace("_", "-")}.png`,
+        faces: getBrillouinZoneFacesFromMaterial(material),
     };
 }
 export function ExtraImportantSettingsByContextProvider({ provider, description = "", BrillouinZoneImageComponent = DefaultBrillouinZoneImage, }) {
     if (isPointsPathProvider(provider)) {
-        const { latticeType, imgSrc } = getBrillouinZoneImagePropsFromMaterial(provider.material);
-        return (_jsx(BrillouinZoneImageComponent, { latticeType: latticeType, imgSrc: imgSrc, description: description }));
+        const { latticeType, imgSrc, faces } = getBrillouinZoneImagePropsFromMaterial(provider.material);
+        return (_jsx(BrillouinZoneImageComponent, { latticeType: latticeType, imgSrc: imgSrc, description: description, faces: faces }));
     }
     return null;
 }

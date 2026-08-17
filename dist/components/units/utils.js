@@ -57,7 +57,7 @@ const createNode = (id, type, data, position = { x: 0, y: 0 }, draggable = false
 });
 export const createUnitNode = (unit, index, direction, isSelected, onUnitSelect, areUnitsExpanded, 
 // eslint-disable-next-line @typescript-eslint/ban-types
-getActions) => {
+getActions, cardOptions = {}) => {
     const nodeType = "unitNode";
     return createNode(unit.flowchartId, nodeType, {
         index: index + 1,
@@ -69,6 +69,8 @@ getActions) => {
         isSelectable: true,
         animateOnHover: true,
         direction,
+        showDeveloperInfo: cardOptions.showDeveloperInfo,
+        showStatus: cardOptions.showStatus,
     });
 };
 export const createStartEndNode = (id, label, direction) => {

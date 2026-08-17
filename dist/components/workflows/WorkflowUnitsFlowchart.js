@@ -3,9 +3,9 @@ import { UnitType } from "@mat3ra/wode/dist/js/enums";
 import Box from "@mui/material/Box";
 import { useCallback } from "react";
 import { WorkflowUnitCard } from "./WorkflowUnitCard";
-export function WorkflowUnitsFlowchart({ workflow, activeUnit, onClick, isCardContentExpanded, headerStatusCls, editable = false, onUnitRemove, onSubworkflowUnitUpdate, ApplicationComponent, ModelComponent, }) {
+export function WorkflowUnitsFlowchart({ workflow, activeUnit, onClick, isCardContentExpanded, headerStatusCls, editable = false, onUnitRemove, onSubworkflowUnitUpdate, ApplicationComponent, ModelComponent, showDeveloperInfo = false, showStatus = true, }) {
     const renderUnit = useCallback((unit, index, sw) => {
-        return (_jsx(Box, { sx: { mt: index ? 2 : 0 }, children: _jsx(WorkflowUnitCard, { headerStatusCls: headerStatusCls, editable: editable, subworkflow: sw !== null && sw !== void 0 ? sw : undefined, onUpdate: onSubworkflowUnitUpdate, onRemove: onUnitRemove !== null && onUnitRemove !== void 0 ? onUnitRemove : (() => undefined), isRemovable: editable, index: index + 1, unit: unit, isSelected: unit.flowchartId === activeUnit.flowchartId, onClick: onClick, isCardContentExpanded: isCardContentExpanded, ApplicationComponent: ApplicationComponent, ModelComponent: ModelComponent }) }, unit.flowchartId));
+        return (_jsx(Box, { sx: { mt: index ? 2 : 0 }, children: _jsx(WorkflowUnitCard, { headerStatusCls: headerStatusCls, editable: editable, showDeveloperInfo: showDeveloperInfo, showStatus: showStatus, subworkflow: sw !== null && sw !== void 0 ? sw : undefined, onUpdate: onSubworkflowUnitUpdate, onRemove: onUnitRemove !== null && onUnitRemove !== void 0 ? onUnitRemove : (() => undefined), isRemovable: editable, index: index + 1, unit: unit, isSelected: unit.flowchartId === activeUnit.flowchartId, onClick: onClick, isCardContentExpanded: isCardContentExpanded, ApplicationComponent: ApplicationComponent, ModelComponent: ModelComponent }) }, unit.flowchartId));
     }, [
         headerStatusCls,
         editable,
@@ -23,7 +23,8 @@ export function WorkflowUnitsFlowchart({ workflow, activeUnit, onClick, isCardCo
         const unit = unitUntyped;
         let sw = null;
         if (unit.type === UnitType.subworkflow) {
-            sw = (_a = workflow.subworkflowInstances.find((s) => s.id === unit.id)) !== null && _a !== void 0 ? _a : null;
+            sw =
+                (_a = workflow.subworkflowInstances.find((s) => s.id === unit.id)) !== null && _a !== void 0 ? _a : null;
             if (sw) {
                 unit.name = sw.name;
             }

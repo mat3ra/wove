@@ -12,12 +12,19 @@ import { useCallback } from "react";
 import _ from "underscore";
 import s from "underscore.string";
 import InfoPopover from "@mat3ra/cove/dist/mui/components/popover/info-popover/InfoPopover";
+/** `total_energy` → `Total energy`. The raw key stays available as the chip's tooltip. */
+export function humanizePropertyName(property) {
+    return s.capitalize(String(property).replace(/_/g, " "));
+}
 export function Properties({ subworkflow, onUpdate, editable = true }) {
     const onIsDraftChange = useCallback((bool) => {
         subworkflow.setIsDraft(bool);
         onUpdate(subworkflow.toJSON());
     }, [subworkflow, onUpdate]);
-    const properties = subworkflow.properties.map((property, index) => (_jsx(Chip, { label: property, sx: { fontSize: "12px", m: 0.5 } }, s.slugify(`${property}${index}`))));
+    // Several units in one subworkflow commonly report the same property — an scf and an nscf
+    // step both yield `fermi_energy` — and the subworkflow lists every occurrence, so the same
+    // chip would otherwise render twice with nothing to tell the copies apart.
+    const properties = _.uniq(subworkflow.properties).map((property) => (_jsx(Chip, { label: humanizePropertyName(property), title: property, sx: { fontSize: "12px", m: 0.5 } }, s.slugify(property))));
     if (_.isEmpty(properties))
         return null;
     return (_jsxs(Stack, { spacing: 1, children: [_jsxs(Stack, { direction: "row", justifyContent: "space-between", alignItems: "center", children: [_jsx(Typography, { variant: "subtitle2", color: "text.primary", children: "Properties" }), _jsxs(InfoPopover, { title: "Subworkflow Properties", children: ["Resulting properties will not be available in \"Analytics\" when ", _jsx("b", { children: "draft" }), " is checked. Use this while prototyping a new workflow with low-fidelity runs."] })] }), _jsx(Box, { children: properties }), _jsx(CheckboxComponent, { label: "Draft", value: subworkflow.isDraft, onChange: (checked) => {

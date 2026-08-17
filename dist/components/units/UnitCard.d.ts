@@ -10,5 +10,9 @@ export type UnitCardProps = {
     onSelect?: (unit: AnySubworkflowUnitSchema) => void;
     animateOnHover?: boolean;
     isCardContentExpanded?: boolean;
+    /** Reveal the flowchart ID; see {@link CardHeader}. */
+    showDeveloperInfo?: boolean;
+    /** Show the run-status badge; off in designers, on in job views. */
+    showStatus?: boolean;
 };
-export declare function UnitCard({ index, unit, actions, isSelected, isBorder, onSelect, animateOnHover, isCardContentExpanded, }: UnitCardProps): React.JSX.Element;
+export declare function UnitCard({ index, unit, actions, isSelected, isBorder, onSelect, animateOnHover, isCardContentExpanded, showDeveloperInfo, showStatus, }: UnitCardProps): React.JSX.Element;

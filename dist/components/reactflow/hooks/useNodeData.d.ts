@@ -10,6 +10,8 @@ export declare function useNodeData(data: NodeData): {
     onSelect: (unit: AnySubworkflowUnitSchema) => void;
     actions: import("../../units/types").Action[] | undefined;
     animateOnHover: boolean | undefined;
+    showDeveloperInfo: boolean | undefined;
+    showStatus: boolean | undefined;
     sourcePosition: Position;
     targetPosition: Position;
     sourceHandleStyles: CSSProperties[];

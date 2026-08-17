@@ -22,9 +22,9 @@ function edgesForSubworkflowUnit(unit) {
 }
 export function transformUnitsToNodesAndEdges(props) {
     var _a, _b;
-    const { units, direction, unitIndex, onUnitSelect, areUnitsExpanded, getActions } = props;
+    const { units, direction, unitIndex, onUnitSelect, areUnitsExpanded, getActions, showDeveloperInfo, showStatus, } = props;
     // map units to reactflow nodes
-    const unitNodes = units.map((unit, index) => createUnitNode(unit, index, direction, index === unitIndex, onUnitSelect, areUnitsExpanded, getActions));
+    const unitNodes = units.map((unit, index) => createUnitNode(unit, index, direction, index === unitIndex, onUnitSelect, areUnitsExpanded, getActions, { showDeveloperInfo, showStatus }));
     const startNode = createStartEndNode("start", "Start", direction);
     const endNode = createStartEndNode("end", "End", direction);
     // map units to reactflow edges (flatMap keeps unit order; avoid filter+flatMap in two passes

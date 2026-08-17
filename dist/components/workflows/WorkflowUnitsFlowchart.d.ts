@@ -11,5 +11,9 @@ export type WorkflowUnitsFlowchartProps = {
     onSubworkflowUnitUpdate?: (subworkflow: SubworkflowSchema) => void;
     ApplicationComponent?: React.ComponentType<any>;
     ModelComponent?: React.ComponentType<any>;
+    /** Reveal flowchart IDs on the cards; see `CardHeader`. */
+    showDeveloperInfo?: boolean;
+    /** Show run-status badges; off in designers, on in job views. */
+    showStatus?: boolean;
 };
-export declare function WorkflowUnitsFlowchart({ workflow, activeUnit, onClick, isCardContentExpanded, headerStatusCls, editable, onUnitRemove, onSubworkflowUnitUpdate, ApplicationComponent, ModelComponent, }: WorkflowUnitsFlowchartProps): React.JSX.Element;
+export declare function WorkflowUnitsFlowchart({ workflow, activeUnit, onClick, isCardContentExpanded, headerStatusCls, editable, onUnitRemove, onSubworkflowUnitUpdate, ApplicationComponent, ModelComponent, showDeveloperInfo, showStatus, }: WorkflowUnitsFlowchartProps): React.JSX.Element;

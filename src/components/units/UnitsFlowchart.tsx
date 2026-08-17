@@ -1,4 +1,5 @@
 import type { AnySubworkflowUnitSchema } from "@mat3ra/wode/dist/js/units/factory";
+import { useTheme } from "@mui/material/styles";
 import React, { useEffect, useState } from "react";
 import ReactFlow, {
     applyEdgeChanges,
@@ -49,6 +50,11 @@ function UnitsFlowchart(props: Props) {
         showDeveloperInfo,
         showStatus,
     } = props;
+
+    const theme = useTheme();
+    // `theme.designer.*` arrives with cove 2026.8+; older pins keep the previous near-black dot.
+    const gridColor =
+        (theme as { designer?: { canvas?: { grid?: string } } }).designer?.canvas?.grid ?? "000";
 
     const [direction] = useState<Direction>(Direction.TB);
     const [nodes, setNodes] = useState<NativeNode<NodeData>[]>([]);
@@ -150,7 +156,8 @@ function UnitsFlowchart(props: Props) {
             minZoom={0.2}
             fitView
         >
-            <Background gap={16} size={0.5} color="000" />
+            {/* "000" is invisible on a dark canvas; the token carries a per-mode value. */}
+            <Background gap={16} size={0.5} color={gridColor} />
             <Controls />
         </ReactFlow>
     );

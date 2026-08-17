@@ -27,7 +27,7 @@ function getHandlePositions(unitType, direction) {
 export function useNodeData(data) {
     const { index = 0, isCardContentExpanded = true, unit = {}, isSelected = false, 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    onSelect = () => { }, actions, animateOnHover, direction = Direction.TB, } = data;
+    onSelect = () => { }, actions, animateOnHover, direction = Direction.TB, showDeveloperInfo, showStatus, } = data;
     const handlePositions = getHandlePositions(unit.type, direction);
     const { source, target, sourceHandleStyles, sourceHandleLabels } = handlePositions;
     return {
@@ -38,6 +38,8 @@ export function useNodeData(data) {
         onSelect,
         actions,
         animateOnHover,
+        showDeveloperInfo,
+        showStatus,
         sourcePosition: source,
         targetPosition: target,
         sourceHandleStyles,

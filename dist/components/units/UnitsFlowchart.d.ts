@@ -9,6 +9,8 @@ interface Props {
     getActions: (unit: AnySubworkflowUnitSchema, index: number) => Action[];
     autoFitToView: boolean;
     isFocused: boolean;
+    showDeveloperInfo?: boolean;
+    showStatus?: boolean;
 }
 declare function UnitsFlowchart(props: Props): React.JSX.Element;
 export default UnitsFlowchart;

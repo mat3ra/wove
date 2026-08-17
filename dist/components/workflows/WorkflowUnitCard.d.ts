@@ -17,5 +17,9 @@ export type WorkflowUnitCardProps = {
     onModelUpdate?: (...args: unknown[]) => void;
     ApplicationComponent?: React.ComponentType<any>;
     ModelComponent?: React.ComponentType<any>;
+    /** Reveal the flowchart ID; see `CardHeader`. */
+    showDeveloperInfo?: boolean;
+    /** Show the run-status badge; off in designers, on in job views. */
+    showStatus?: boolean;
 };
-export declare function WorkflowUnitCard({ index, unit, isSelected, onClick, isRemovable, onRemove, subworkflow, isCardContentExpanded, editable, headerStatusCls, onUpdate, onApplicationUpdate, onModelUpdate, ApplicationComponent, ModelComponent, }: WorkflowUnitCardProps): React.JSX.Element;
+export declare function WorkflowUnitCard({ index, unit, isSelected, onClick, isRemovable, onRemove, subworkflow, isCardContentExpanded, editable, showDeveloperInfo, showStatus, headerStatusCls, onUpdate, onApplicationUpdate, onModelUpdate, ApplicationComponent, ModelComponent, }: WorkflowUnitCardProps): React.JSX.Element;

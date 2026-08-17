@@ -1,12 +1,22 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import ReactFlow, { applyEdgeChanges, applyNodeChanges, Background, Controls, useReactFlow, } from "reactflow";
 import { nodeTypes } from "../reactflow/customNodes/NodeTypes";
 import useAutoLayout from "../reactflow/hooks/useAutoLayout";
 import { transformUnitsToNodesAndEdges } from "../reactflow/hooks/useTransformUnitsToNodesAndEdges";
 import { Direction } from "./types";
+/**
+ * Scale below which a unit card's name stops being readable. Auto-fit clamps here rather
+ * than shrinking a long workflow to fit the viewport.
+ */
+const MIN_READABLE_ZOOM = 0.6;
 function UnitsFlowchart(props) {
-    const { units, areUnitsExpanded, unitIndex, onUnitSelect, getActions, autoFitToView, isFocused, } = props;
+    var _a, _b, _c;
+    const { units, areUnitsExpanded, unitIndex, onUnitSelect, getActions, autoFitToView, isFocused, showDeveloperInfo, showStatus, } = props;
+    const theme = useTheme();
+    // `theme.designer.*` arrives with cove 2026.8+; older pins keep the previous near-black dot.
+    const gridColor = (_c = (_b = (_a = theme.designer) === null || _a === void 0 ? void 0 : _a.canvas) === null || _b === void 0 ? void 0 : _b.grid) !== null && _c !== void 0 ? _c : "000";
     const [direction] = useState(Direction.TB);
     const [nodes, setNodes] = useState([]);
     const [edges, setEdges] = useState([]);
@@ -28,6 +38,8 @@ function UnitsFlowchart(props) {
             areUnitsExpanded,
             getActions,
             onUnitSelect,
+            showDeveloperInfo,
+            showStatus,
         });
         // Carry layout state (position + handle sides + style) from the previous render for any
         // node whose id (== unit.flowchartId) still exists. Without this, every units update
@@ -67,6 +79,8 @@ function UnitsFlowchart(props) {
         direction,
         getActions,
         onUnitSelect,
+        showDeveloperInfo,
+        showStatus,
     ]);
     // used to force execution order of nodes/edges update and automatic layout
     useEffect(() => {
@@ -76,9 +90,13 @@ function UnitsFlowchart(props) {
     }, [nodesAndEdgesUpdated]);
     useEffect(() => {
         if (autoFitToView) {
-            fitView({ duration: 400 });
+            // Fitting a long workflow into the viewport otherwise shrinks unit cards until
+            // their names are unreadable — a ten-unit subworkflow lands around 6px type, on a
+            // canvas that is mostly empty anyway. Stop shrinking at a legible scale and let
+            // the taller-than-viewport result scroll instead.
+            fitView({ duration: 400, minZoom: MIN_READABLE_ZOOM });
         }
     }, [fitView, nodes, autoFitToView]);
-    return (_jsxs(ReactFlow, { nodes: nodes, edges: edges, onNodesChange: onNodesChange, onEdgesChange: onEdgesChange, nodeTypes: nodeTypes, nodeOrigin: [0.5, 0.5], proOptions: { hideAttribution: true }, preventScrolling: isFocused, zoomOnScroll: isFocused, minZoom: 0.2, fitView: true, children: [_jsx(Background, { gap: 16, size: 0.5, color: "000" }), _jsx(Controls, {})] }));
+    return (_jsxs(ReactFlow, { nodes: nodes, edges: edges, onNodesChange: onNodesChange, onEdgesChange: onEdgesChange, nodeTypes: nodeTypes, nodeOrigin: [0.5, 0.5], proOptions: { hideAttribution: true }, preventScrolling: isFocused, zoomOnScroll: isFocused, minZoom: 0.2, fitView: true, children: [_jsx(Background, { gap: 16, size: 0.5, color: gridColor }), _jsx(Controls, {})] }));
 }
 export default UnitsFlowchart;
