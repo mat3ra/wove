@@ -54,7 +54,7 @@ export function useNodeData(data: NodeData) {
         direction = Direction.TB,
     } = data;
 
-    const handlePositions = getHandlePositions(unit.type, direction);
+    const handlePositions = getHandlePositions(unit.type as `${UnitType}`, direction);
     const { source, target, sourceHandleStyles, sourceHandleLabels } = handlePositions;
 
     return {

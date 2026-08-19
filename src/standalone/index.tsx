@@ -24,7 +24,7 @@ import ReactDOM from "react-dom";
 
 import { WorkflowUnitsFlowchart } from "../components/workflows/WorkflowUnitsFlowchart";
 import { ApplicationRegistry, WorkflowStandata } from "@mat3ra/standata";
-import { ApplicationDriver } from "@mat3ra/standata/dist/js/ApplicationDriver";
+import StandataDriver from "@mat3ra/standata/dist/js/StandataDriver";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import esseSchemas from "@mat3ra/esse/dist/js/schemas.json";
 
@@ -34,7 +34,7 @@ import esseSchemas from "@mat3ra/esse/dist/js/schemas.json";
 // 2. Set the ApplicationRegistry driver so getExecutablesByApplication() works.
 // ---------------------------------------------------------------------------
 JSONSchemasInterface.setSchemas(esseSchemas as any);
-ApplicationRegistry.setDriver(new ApplicationDriver());
+ApplicationRegistry.setDriver(new StandataDriver());
 
 // ---------------------------------------------------------------------------
 // Theme
