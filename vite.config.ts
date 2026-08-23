@@ -76,7 +76,9 @@ export default defineConfig({
             output: {
                 entryFileNames: "main.js",
                 chunkFileNames: "[name]-[hash].js",
-                assetFileNames: "[name]-[hash].[ext]",
+                // Stable name so a host page can load the stylesheet by URL, the way
+                // wave.js' main.css is loaded: https://mat3ra.github.io/wove/main.css
+                assetFileNames: "main.[ext]",
             },
         },
     },
