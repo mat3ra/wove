@@ -4,6 +4,7 @@ import test from "node:test";
 
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import esseSchemas from "@mat3ra/esse/dist/js/schemas.json";
+import type { SubworkflowSchema } from "@mat3ra/esse/dist/js/types";
 
 import {
     adaptSubworkflowConfig,
@@ -11,6 +12,7 @@ import {
     createWorkflowFromConfig,
     isWorkflowLike,
     parseWorkflowConfig,
+    type WorkflowConfig,
 } from "../src/utils/workflowConfig";
 
 // wode entities validate against the ESSE schemas, which the host registers at startup
@@ -19,8 +21,21 @@ JSONSchemasInterface.setSchemas(esseSchemas as any);
 
 /**
  * A workflow config as it arrives from outside: two subworkflow units linked to two subworkflows
- * by `_id`, and no `workflows` key (which the wode entity requires).
+ * by `_id`, no `workflows` key (which the wode entity requires), and units carrying only the
+ * fields the viewer reads — hence the casts, and hence the fallback path this exercises.
  */
+const subworkflowConfigs = [
+    {
+        _id: "sw-1",
+        name: "SCF",
+        application: { name: "espresso", version: "6.3", shortName: "qe" },
+        model: { type: "dft", subtype: "gga" },
+        properties: ["total_energy"],
+        units: [{ flowchartId: "sw-1-u-1", name: "pw_scf", type: "execution", head: true }],
+    },
+    { _id: "sw-2", name: "Band structure", model: {}, properties: [], units: [] },
+] as unknown as Partial<SubworkflowSchema>[];
+
 const workflowConfig = {
     _id: "wf-1",
     name: "Demo workflow",
@@ -49,18 +64,8 @@ const workflowConfig = {
             results: [],
         },
     ],
-    subworkflows: [
-        {
-            _id: "sw-1",
-            name: "SCF",
-            application: { name: "espresso", version: "6.3", shortName: "qe" },
-            model: { type: "dft", subtype: "gga" },
-            properties: ["total_energy"],
-            units: [{ flowchartId: "sw-1-u-1", name: "pw_scf", type: "execution", head: true }],
-        },
-        { _id: "sw-2", name: "Band structure", model: {}, properties: [], units: [] },
-    ],
-};
+    subworkflows: subworkflowConfigs,
+} as unknown as WorkflowConfig;
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 
@@ -87,7 +92,7 @@ test("parseWorkflowConfig returns a config object as-is", () => {
 test("parseWorkflowConfig parses a JSON string", () => {
     const config = parseWorkflowConfig(JSON.stringify(workflowConfig));
     assert.strictEqual(config.name, "Demo workflow");
-    assert.strictEqual(config.units.length, 2);
+    assert.strictEqual(config.units?.length, 2);
 });
 
 test("parseWorkflowConfig unwraps the workflow of a job-like payload", () => {
@@ -102,8 +107,8 @@ test("parseWorkflowConfig keeps a workflow that has both units and a nested work
 
 test("parseWorkflowConfig throws on input that is not an object", () => {
     assert.throws(() => parseWorkflowConfig("[]"), TypeError);
-    assert.throws(() => parseWorkflowConfig(42 as any), TypeError);
-    assert.throws(() => parseWorkflowConfig(null as any), TypeError);
+    assert.throws(() => parseWorkflowConfig(42 as unknown as WorkflowConfig), TypeError);
+    assert.throws(() => parseWorkflowConfig(null as unknown as WorkflowConfig), TypeError);
 });
 
 // ---------------------------------------------------------------------------
@@ -148,7 +153,7 @@ test("createWorkflowFromConfig instantiates a wode Workflow for a complete confi
 test("createWorkflowFromConfig falls back to a JSON view when the entity cannot be built", () => {
     // An execution unit without an application is rejected by the wode unit factory.
     const workflow = withoutWarnings(() => createWorkflowFromConfig(clone(workflowConfig)));
-    const [subworkflow] = workflow.subworkflowInstances as any[];
+    const [subworkflow] = workflow.subworkflowInstances;
     assert.strictEqual(subworkflow.name, "SCF");
     assert.deepStrictEqual(subworkflow.properties, ["total_energy"]);
     assert.strictEqual(subworkflow.unitsInstances.length, 1);
@@ -184,13 +189,16 @@ test("adaptWorkflowConfig exposes units and subworkflows as instances", () => {
 
 test("adaptWorkflowConfig tolerates missing and malformed entity lists", () => {
     assert.deepStrictEqual(adaptWorkflowConfig({ name: "no units" }).unitInstances, []);
-    const junk = adaptWorkflowConfig({ units: "nope", subworkflows: 7 });
+    const junk = adaptWorkflowConfig({
+        units: "nope",
+        subworkflows: 7,
+    } as unknown as WorkflowConfig);
     assert.deepStrictEqual(junk.unitInstances, []);
     assert.deepStrictEqual(junk.subworkflowInstances, []);
 });
 
 test("adaptSubworkflowConfig marks a model without a type as unknown", () => {
-    const withModel = adaptSubworkflowConfig(workflowConfig.subworkflows[0]);
+    const withModel = adaptSubworkflowConfig(subworkflowConfigs[0]);
     assert.strictEqual(withModel.modelInstance.isUnknown, false);
     const withoutModel = adaptSubworkflowConfig({ _id: "sw-3", name: "No model" });
     assert.strictEqual(withoutModel.modelInstance.isUnknown, true);
@@ -198,7 +206,7 @@ test("adaptSubworkflowConfig marks a model without a type as unknown", () => {
 });
 
 test("adaptSubworkflowConfig tracks the draft flag", () => {
-    const config: Record<string, any> = { _id: "sw-4", name: "Draft", isDraft: true };
+    const config: Partial<SubworkflowSchema> = { _id: "sw-4", name: "Draft", isDraft: true };
     const subworkflow = adaptSubworkflowConfig(config);
     assert.strictEqual(subworkflow.isDraft, true);
     subworkflow.setIsDraft(false);

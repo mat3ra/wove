@@ -13,8 +13,10 @@ import { ReactFlowProvider } from "reactflow";
 
 import {
     createWorkflowFromConfig,
+    type SubworkflowLike,
     type WorkflowConfigInput,
     type WorkflowLike,
+    type WorkflowUnitInstance,
 } from "../../utils/workflowConfig";
 import type { Action } from "../units/types";
 import UnitsFlowchart from "../units/UnitsFlowchart";
@@ -41,7 +43,7 @@ export type WorkflowViewerProps = {
     isCardContentExpanded?: boolean;
     editable?: boolean;
     /** Called with the workflow unit whose card was clicked. */
-    onUnitSelect?: (unit: any) => void;
+    onUnitSelect?: (unit: WorkflowUnitInstance) => void;
     /** Injected by the host app (e.g. @mat3ra/ave's Application); read-only summary by default. */
     ApplicationComponent?: React.ComponentType<any>;
     /** Injected by the host app (e.g. @mat3ra/move's Model); read-only summary by default. */
@@ -68,7 +70,7 @@ export function WorkflowViewer({
     ModelComponent,
 }: WorkflowViewerProps) {
     const workflowInstance = useMemo(() => createWorkflowFromConfig(workflow), [workflow]);
-    const units: any[] = workflowInstance.unitInstances ?? [];
+    const units = workflowInstance.unitInstances ?? [];
 
     const [activeFlowchartId, setActiveFlowchartId] = useState<string | undefined>();
     const [activeSubworkflowUnitId, setActiveSubworkflowUnitId] = useState<string | undefined>();
@@ -78,15 +80,15 @@ export function WorkflowViewer({
     // falls back to its first unit without an effect resetting things after the first paint.
     const activeUnit = units.find((unit) => unit.flowchartId === activeFlowchartId) ?? units[0];
 
-    const activeSubworkflow =
+    const activeSubworkflow: SubworkflowLike | undefined =
         activeUnit?.type === UnitType.subworkflow
-            ? workflowInstance.subworkflowInstances.find((sw: any) => sw.id === activeUnit.id)
+            ? workflowInstance.subworkflowInstances.find((sw) => sw.id === activeUnit.id)
             : undefined;
 
     // `UnitsFlowchart` works off unit JSON, not instances (as in `UnitsFlowchartContainer`).
     const subworkflowUnits = useMemo<AnySubworkflowUnitSchema[]>(
         () =>
-            (activeSubworkflow?.unitsInstances ?? []).map((unit: any) =>
+            (activeSubworkflow?.unitsInstances ?? []).map((unit) =>
                 typeof unit.toJSON === "function" ? unit.toJSON() : unit,
             ),
         [activeSubworkflow],
@@ -99,18 +101,17 @@ export function WorkflowViewer({
 
     const applicationLabels = useMemo(() => {
         const labels = workflowInstance.subworkflowInstances
-            .map((sw: any) => {
-                const application = sw.application ?? {};
-                return [application.shortName ?? application.name, application.version]
+            .map(({ application }) =>
+                [application?.shortName ?? application?.name, application?.version]
                     .filter(Boolean)
-                    .join(" ");
-            })
+                    .join(" "),
+            )
             .filter(Boolean);
         return Array.from(new Set<string>(labels));
     }, [workflowInstance]);
 
     const handleUnitClick = useCallback(
-        (unit: any) => {
+        (unit: WorkflowUnitInstance) => {
             setActiveFlowchartId(unit?.flowchartId);
             setActiveSubworkflowUnitId(undefined);
             onUnitSelect?.(unit);
@@ -123,7 +124,10 @@ export function WorkflowViewer({
     }, []);
 
     const getActions = useCallback(() => NO_ACTIONS, []);
-    const headerStatusCls = useCallback((unit: any) => getUnitStatusCls(unit?.status), []);
+    const headerStatusCls = useCallback(
+        (unit: WorkflowUnitInstance) => getUnitStatusCls(unit?.status),
+        [],
+    );
 
     return (
         <Stack spacing={2} className="wove-workflow-viewer">

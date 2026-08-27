@@ -28,6 +28,10 @@ import { WorkflowViewer } from "@mat3ra/wove";
 `createWorkflowFromConfig()` builds a `@mat3ra/wode` `Workflow` — a config the entity rejects
 (incomplete, or written against another schema version) still renders, read-only, from its JSON.
 
+The types are ESSE's: `WorkflowConfig` is `Partial<WorkflowSchema>`, units are `WorkflowUnitSchema`
+and the subworkflow-level unit union, and a container config is keyed off `JobSchema`. So anything
+that typechecks against ESSE typechecks here, and the schemas stay the single source of truth.
+
 | prop                    | default           |                                                      |
 | ----------------------- | ----------------- | ---------------------------------------------------- |
 | `workflow`              | —                 | the workflow JSON (or instance) to show              |

@@ -21,4 +21,13 @@ export {
     isWorkflowLike,
     parseWorkflowConfig,
 } from "./utils/workflowConfig";
-export type { WorkflowConfigInput, WorkflowLike } from "./utils/workflowConfig";
+export type {
+    SubworkflowLike,
+    SubworkflowUnitInstance,
+    UnitInstance,
+    WorkflowConfig,
+    WorkflowConfigInput,
+    WorkflowContainerConfig,
+    WorkflowLike,
+    WorkflowUnitInstance,
+} from "./utils/workflowConfig";
