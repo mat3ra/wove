@@ -42,7 +42,9 @@ export function WorkflowUnitsFlowchart({
                         subworkflow={sw ?? undefined}
                         onUpdate={onSubworkflowUnitUpdate}
                         onRemove={onUnitRemove ?? (() => undefined)}
-                        isRemovable={editable}
+                        // Offer Delete only when there is something to remove the unit with:
+                        // `editable` alone would enable a button whose click goes nowhere.
+                        isRemovable={editable && Boolean(onUnitRemove)}
                         index={index + 1}
                         unit={unit}
                         isSelected={unit.flowchartId === activeUnit?.flowchartId}

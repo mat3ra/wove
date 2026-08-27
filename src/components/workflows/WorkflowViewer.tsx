@@ -38,6 +38,7 @@ export type WorkflowViewerProps = {
     /** Height of the flowchart pane — React Flow needs an explicit one. */
     flowchartHeight?: number | string;
     isCardContentExpanded?: boolean;
+    /** Enable the cards' Copy action. The viewer is read-only: it wires no remove or update. */
     editable?: boolean;
     /** Called with the workflow unit whose card was clicked. */
     onUnitSelect?: (unit: AnyWorkflowUnit) => void;

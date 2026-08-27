@@ -41,7 +41,7 @@ reported in place — the viewer shows what is wrong with it instead of a half-p
 | `showFlowchart`         | `true`            | show the selected subworkflow's units as a flowchart |
 | `flowchartHeight`       | `520`             | height of the flowchart pane                         |
 | `isCardContentExpanded` | `true`            | start the unit cards expanded                        |
-| `editable`              | `false`           | enable the cards' editing affordances                |
+| `editable`              | `false`           | enable copying a unit's JSON from its card           |
 | `onUnitSelect`          | —                 | called with the workflow unit whose card was clicked |
 | `ApplicationComponent`  | read-only summary | e.g. `@mat3ra/ave`'s `Application`                   |
 | `ModelComponent`        | read-only summary | e.g. `@mat3ra/move`'s `Model`                        |
