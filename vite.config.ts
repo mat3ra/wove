@@ -76,7 +76,14 @@ export default defineConfig({
             output: {
                 entryFileNames: "main.js",
                 chunkFileNames: "[name]-[hash].js",
-                assetFileNames: "[name]-[hash].[ext]",
+                // The stylesheet keeps a stable name so a host page can load it by URL, the
+                // way wave.js' main.css is: https://mat3ra.github.io/wove/main.css. Everything
+                // else stays hashed — a flat "main.[ext]" would collide the moment the bundle
+                // emitted a second asset of any one type (a font, an image).
+                assetFileNames: (asset) =>
+                    asset.names.some((name) => name.endsWith(".css"))
+                        ? "main.css"
+                        : "[name]-[hash].[ext]",
             },
         },
     },

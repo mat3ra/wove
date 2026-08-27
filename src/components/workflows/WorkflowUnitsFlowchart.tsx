@@ -8,11 +8,11 @@ import React, { useCallback } from "react";
 import { WorkflowUnitCard } from "./WorkflowUnitCard";
 
 export type WorkflowUnitsFlowchartProps = {
-    workflow: any;
-    activeUnit: any;
-    onClick: (unit: any) => void;
+    workflow: WodeWorkflow;
+    activeUnit: AnyWorkflowUnit | undefined;
+    onClick: (unit: AnyWorkflowUnit) => void;
     isCardContentExpanded?: boolean;
-    headerStatusCls: (unit: any) => string;
+    headerStatusCls: (unit: AnyWorkflowUnit) => string;
     editable?: boolean;
     onUnitRemove?: (flowchartId?: string) => void;
     onSubworkflowUnitUpdate?: (subworkflow: SubworkflowSchema) => void;
@@ -33,7 +33,7 @@ export function WorkflowUnitsFlowchart({
     ModelComponent,
 }: WorkflowUnitsFlowchartProps) {
     const renderUnit = useCallback(
-        (unit: any, index: number, sw: WodeSubworkflow | null) => {
+        (unit: AnyWorkflowUnit, index: number, sw: WodeSubworkflow | null) => {
             return (
                 <Box key={unit.flowchartId} sx={{ mt: index ? 2 : 0 }}>
                     <WorkflowUnitCard
@@ -42,10 +42,12 @@ export function WorkflowUnitsFlowchart({
                         subworkflow={sw ?? undefined}
                         onUpdate={onSubworkflowUnitUpdate}
                         onRemove={onUnitRemove ?? (() => undefined)}
-                        isRemovable={editable}
+                        // Offer Delete only when there is something to remove the unit with:
+                        // `editable` alone would enable a button whose click goes nowhere.
+                        isRemovable={editable && Boolean(onUnitRemove)}
                         index={index + 1}
                         unit={unit}
-                        isSelected={unit.flowchartId === activeUnit.flowchartId}
+                        isSelected={unit.flowchartId === activeUnit?.flowchartId}
                         onClick={onClick}
                         isCardContentExpanded={isCardContentExpanded}
                         ApplicationComponent={ApplicationComponent}
@@ -59,7 +61,7 @@ export function WorkflowUnitsFlowchart({
             editable,
             onSubworkflowUnitUpdate,
             onUnitRemove,
-            activeUnit.flowchartId,
+            activeUnit?.flowchartId,
             onClick,
             isCardContentExpanded,
             ApplicationComponent,
@@ -68,11 +70,10 @@ export function WorkflowUnitsFlowchart({
     );
 
     const elements: React.ReactNode[] = [];
-    workflow.unitInstances.forEach((unitUntyped: AnyWorkflowUnit, i: number) => {
-        const unit = unitUntyped;
+    workflow.unitInstances.forEach((unit, i) => {
         let sw: WodeSubworkflow | null = null;
         if (unit.type === UnitType.subworkflow) {
-            sw = workflow.subworkflowInstances.find((s: WodeSubworkflow) => s.id === unit.id) ?? null;
+            sw = workflow.subworkflowInstances.find((s) => s.id === unit.id) ?? null;
             if (sw) {
                 unit.name = sw.name;
             }

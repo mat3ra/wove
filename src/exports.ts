@@ -1,3 +1,5 @@
+export { WorkflowViewer } from "./components/workflows/WorkflowViewer";
+export type { WorkflowViewerProps } from "./components/workflows/WorkflowViewer";
 export { WorkflowUnitsFlowchart } from "./components/workflows/WorkflowUnitsFlowchart";
 export type { WorkflowUnitsFlowchartProps } from "./components/workflows/WorkflowUnitsFlowchart";
 export { WorkflowUnitCard } from "./components/workflows/WorkflowUnitCard";
@@ -12,3 +14,5 @@ export { WORKFLOW_STATUS_COLOR, WORKFLOW_STATUS_TEXT } from "./settings";
 export { getUnitStatusCls, getWorkflowStatusCls } from "./components/units/utils";
 export { ExtraImportantSettingsByContextProvider } from "./context/utils";
 export { Properties } from "./components/subworkflows/Properties";
+export { createWorkflowFromConfig, parseWorkflowConfig } from "./utils/workflowConfig";
+export type { WorkflowConfigInput } from "./utils/workflowConfig";

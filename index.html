@@ -1,12 +1,21 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wove — Standalone Demo</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/standalone/index.tsx"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Wove — Standalone Demo</title>
+    </head>
+    <body style="margin: 0">
+        <div id="wove-demo-root" style="width: 100vw; height: 100vh"></div>
+        <script type="module">
+            import { renderWorkflow } from "/src/standalone/index.tsx";
+
+            // Guarded on this page's own container: host pages import the same bundle just to get
+            // `window.renderWorkflow`, and must not have the demo rendered into a `#root` of theirs.
+            // They pass their own workflow JSON and container instead, e.g.
+            // window.renderWorkflow(workflowConfig, document.getElementById("my-div")).
+            const container = document.getElementById("wove-demo-root");
+            if (container) renderWorkflow(undefined, container);
+        </script>
+    </body>
 </html>
