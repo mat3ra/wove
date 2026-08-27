@@ -14,20 +14,5 @@ export { WORKFLOW_STATUS_COLOR, WORKFLOW_STATUS_TEXT } from "./settings";
 export { getUnitStatusCls, getWorkflowStatusCls } from "./components/units/utils";
 export { ExtraImportantSettingsByContextProvider } from "./context/utils";
 export { Properties } from "./components/subworkflows/Properties";
-export {
-    adaptSubworkflowConfig,
-    adaptWorkflowConfig,
-    createWorkflowFromConfig,
-    isWorkflowLike,
-    parseWorkflowConfig,
-} from "./utils/workflowConfig";
-export type {
-    SubworkflowLike,
-    SubworkflowUnitInstance,
-    UnitInstance,
-    WorkflowConfig,
-    WorkflowConfigInput,
-    WorkflowContainerConfig,
-    WorkflowLike,
-    WorkflowUnitInstance,
-} from "./utils/workflowConfig";
+export { createWorkflowFromConfig, parseWorkflowConfig } from "./utils/workflowConfig";
+export type { WorkflowConfigInput } from "./utils/workflowConfig";

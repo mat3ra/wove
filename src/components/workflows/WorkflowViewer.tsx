@@ -1,7 +1,9 @@
 import "reactflow/dist/style.css";
 
+import type { Subworkflow, Workflow } from "@mat3ra/wode";
 import { UnitType } from "@mat3ra/wode/dist/js/enums";
-import type { AnySubworkflowUnitSchema } from "@mat3ra/wode/dist/js/units/factory";
+import type { AnySubworkflowUnitSchema, AnyWorkflowUnit } from "@mat3ra/wode/dist/js/units/factory";
+import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
@@ -11,13 +13,7 @@ import Typography from "@mui/material/Typography";
 import React, { useCallback, useMemo, useState } from "react";
 import { ReactFlowProvider } from "reactflow";
 
-import {
-    createWorkflowFromConfig,
-    type SubworkflowLike,
-    type WorkflowConfigInput,
-    type WorkflowLike,
-    type WorkflowUnitInstance,
-} from "../../utils/workflowConfig";
+import { createWorkflowFromConfig, type WorkflowConfigInput } from "../../utils/workflowConfig";
 import type { Action } from "../units/types";
 import UnitsFlowchart from "../units/UnitsFlowchart";
 import { getUnitStatusCls } from "../units/utils";
@@ -28,10 +24,11 @@ const NO_ACTIONS: Action[] = [];
 
 export type WorkflowViewerProps = {
     /**
-     * The workflow to show: raw JSON (config object or JSON string) as passed in from outside, or
-     * a workflow instance the host app already holds. See {@link createWorkflowFromConfig}.
+     * The workflow to show: ESSE JSON (a `workflow` or `job` config, or a JSON string of one) as
+     * passed in from outside, or a `Workflow` the host app already holds.
+     * See {@link createWorkflowFromConfig}.
      */
-    workflow: WorkflowConfigInput | WorkflowLike;
+    workflow: WorkflowConfigInput | Workflow;
     /** Heading for the workflow; defaults to its name. */
     title?: string;
     /** Show the name / unit count / application heading. */
@@ -43,7 +40,7 @@ export type WorkflowViewerProps = {
     isCardContentExpanded?: boolean;
     editable?: boolean;
     /** Called with the workflow unit whose card was clicked. */
-    onUnitSelect?: (unit: WorkflowUnitInstance) => void;
+    onUnitSelect?: (unit: AnyWorkflowUnit) => void;
     /** Injected by the host app (e.g. @mat3ra/ave's Application); read-only summary by default. */
     ApplicationComponent?: React.ComponentType<any>;
     /** Injected by the host app (e.g. @mat3ra/move's Model); read-only summary by default. */
@@ -69,8 +66,17 @@ export function WorkflowViewer({
     ApplicationComponent,
     ModelComponent,
 }: WorkflowViewerProps) {
-    const workflowInstance = useMemo(() => createWorkflowFromConfig(workflow), [workflow]);
-    const units = workflowInstance.unitInstances ?? [];
+    // The config is external input, so building the entity is a fallible step: keep the error to
+    // show instead of letting it take the host app's render down with it.
+    const [workflowInstance, error] = useMemo<[Workflow | undefined, Error | undefined]>(() => {
+        try {
+            return [createWorkflowFromConfig(workflow), undefined];
+        } catch (caught) {
+            return [undefined, caught instanceof Error ? caught : new Error(String(caught))];
+        }
+    }, [workflow]);
+
+    const units: AnyWorkflowUnit[] = workflowInstance?.unitInstances ?? [];
 
     const [activeFlowchartId, setActiveFlowchartId] = useState<string | undefined>();
     const [activeSubworkflowUnitId, setActiveSubworkflowUnitId] = useState<string | undefined>();
@@ -80,17 +86,14 @@ export function WorkflowViewer({
     // falls back to its first unit without an effect resetting things after the first paint.
     const activeUnit = units.find((unit) => unit.flowchartId === activeFlowchartId) ?? units[0];
 
-    const activeSubworkflow: SubworkflowLike | undefined =
+    const activeSubworkflow: Subworkflow | undefined =
         activeUnit?.type === UnitType.subworkflow
-            ? workflowInstance.subworkflowInstances.find((sw) => sw.id === activeUnit.id)
+            ? workflowInstance?.subworkflowInstances.find((sw) => sw.id === activeUnit.id)
             : undefined;
 
     // `UnitsFlowchart` works off unit JSON, not instances (as in `UnitsFlowchartContainer`).
     const subworkflowUnits = useMemo<AnySubworkflowUnitSchema[]>(
-        () =>
-            (activeSubworkflow?.unitsInstances ?? []).map((unit) =>
-                typeof unit.toJSON === "function" ? unit.toJSON() : unit,
-            ),
+        () => (activeSubworkflow?.unitsInstances ?? []).map((unit) => unit.toJSON()),
         [activeSubworkflow],
     );
 
@@ -99,19 +102,21 @@ export function WorkflowViewer({
         subworkflowUnits.findIndex((unit) => unit.flowchartId === activeSubworkflowUnitId),
     );
 
-    const applicationLabels = useMemo(() => {
-        const labels = workflowInstance.subworkflowInstances
-            .map(({ application }) =>
-                [application?.shortName ?? application?.name, application?.version]
-                    .filter(Boolean)
-                    .join(" "),
-            )
-            .filter(Boolean);
-        return Array.from(new Set<string>(labels));
-    }, [workflowInstance]);
+    // `usedApplications` is the entity's own roll-up: deduplicated, and across nested workflows.
+    const applicationLabels = useMemo(
+        () =>
+            (workflowInstance?.usedApplications ?? [])
+                .map((application) =>
+                    [application.shortName ?? application.name, application.version]
+                        .filter(Boolean)
+                        .join(" "),
+                )
+                .filter(Boolean),
+        [workflowInstance],
+    );
 
     const handleUnitClick = useCallback(
-        (unit: WorkflowUnitInstance) => {
+        (unit: AnyWorkflowUnit) => {
             setActiveFlowchartId(unit?.flowchartId);
             setActiveSubworkflowUnitId(undefined);
             onUnitSelect?.(unit);
@@ -125,9 +130,17 @@ export function WorkflowViewer({
 
     const getActions = useCallback(() => NO_ACTIONS, []);
     const headerStatusCls = useCallback(
-        (unit: WorkflowUnitInstance) => getUnitStatusCls(unit?.status),
+        (unit: AnyWorkflowUnit) => getUnitStatusCls(unit?.status),
         [],
     );
+
+    if (error || !workflowInstance) {
+        return (
+            <Alert severity="error" className="wove-workflow-viewer">
+                {error?.message ?? "wove: this workflow could not be read"}
+            </Alert>
+        );
+    }
 
     return (
         <Stack spacing={2} className="wove-workflow-viewer">
@@ -152,7 +165,7 @@ export function WorkflowViewer({
             ) : (
                 <WorkflowUnitsFlowchart
                     workflow={workflowInstance}
-                    activeUnit={activeUnit ?? {}}
+                    activeUnit={activeUnit}
                     onClick={handleUnitClick}
                     isCardContentExpanded={isCardContentExpanded}
                     headerStatusCls={headerStatusCls}

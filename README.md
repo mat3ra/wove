@@ -23,14 +23,15 @@ import { WorkflowViewer } from "@mat3ra/wove";
 <WorkflowViewer workflow={workflowConfig} />;
 ```
 
-`workflow` accepts a workflow config object, a JSON string of one, a payload carrying one under
-`workflow` (a job config, say), or a workflow instance the host app already holds. Under the hood
-`createWorkflowFromConfig()` builds a `@mat3ra/wode` `Workflow` — a config the entity rejects
-(incomplete, or written against another schema version) still renders, read-only, from its JSON.
+`workflow` accepts `@mat3ra/esse`'s `WorkflowSchema`, a `JobSchema` (or any payload carrying the
+workflow under `workflow`), a JSON string of either, or a `@mat3ra/wode` `Workflow` the host app
+already holds. Under the hood `createWorkflowFromConfig()` builds that `Workflow`, which is what
+gives the cards their subworkflows, model instances, properties and statuses.
 
-The types are ESSE's: `WorkflowConfig` is `Partial<WorkflowSchema>`, units are `WorkflowUnitSchema`
-and the subworkflow-level unit union, and a container config is keyed off `JobSchema`. So anything
-that typechecks against ESSE typechecks here, and the schemas stay the single source of truth.
+The types are the ecosystem's own, not wove's: ESSE schemas describe the JSON going in, wode
+entities are what comes out, and there is no third description of a workflow in between. The
+entity validates against the ESSE schemas on the way in, so a config that is not valid ESSE is
+reported in place — the viewer shows what is wrong with it instead of a half-populated view.
 
 | prop                    | default           |                                                      |
 | ----------------------- | ----------------- | ---------------------------------------------------- |

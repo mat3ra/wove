@@ -3,6 +3,7 @@
  * passed in (`index.html`). Doubles as the manual test for the JSON entry point: pick a workflow
  * from @mat3ra/standata, or paste any workflow JSON and render it.
  */
+import type { WorkflowSchema } from "@mat3ra/esse/dist/js/types";
 import { WorkflowStandata } from "@mat3ra/standata";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
@@ -23,11 +24,15 @@ import { WorkflowViewer } from "../components/workflows/WorkflowViewer";
 import { parseWorkflowConfig } from "../utils/workflowConfig";
 
 export function DemoApp() {
-    const allWorkflows: any[] = useMemo(() => new WorkflowStandata().getAll() ?? [], []);
+    // The standata catalog type declares only the index fields; the loaded JSONs are workflows.
+    const allWorkflows = useMemo<WorkflowSchema[]>(
+        () => (new WorkflowStandata().getAll() as unknown as WorkflowSchema[]) ?? [],
+        [],
+    );
 
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [pastedJson, setPastedJson] = useState("");
-    const [pastedConfig, setPastedConfig] = useState<Record<string, any> | null>(null);
+    const [pastedConfig, setPastedConfig] = useState<WorkflowSchema | null>(null);
     const [pasteError, setPasteError] = useState<string | null>(null);
 
     const workflowConfig = pastedConfig ?? allWorkflows[selectedIndex];
@@ -85,7 +90,7 @@ export function DemoApp() {
                         value={selectedIndex}
                         label="Workflow"
                         onChange={(e) => setSelectedIndex(Number(e.target.value))}>
-                        {allWorkflows.map((workflow: any, index: number) => (
+                        {allWorkflows.map((workflow, index) => (
                             // eslint-disable-next-line react/no-array-index-key
                             <MenuItem key={index} value={index}>
                                 {workflow.name ?? `Workflow ${index + 1}`}
