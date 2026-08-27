@@ -41,6 +41,7 @@
         "@mat3ra/made": "*",
         "@mat3ra/mode": "*",
         "@mat3ra/move": "*",
+        "@mat3ra/prode": "*",
         "@mat3ra/standata": "*",
         "react": "^17.0.0",
         "react-dom": "^17.0.0"
@@ -65,6 +66,7 @@
         "@mat3ra/ide": "2026.8.18-0",
         "@mat3ra/made": "2026.8.18-0",
         "@mat3ra/mode": "2026.8.18-0",
+        "@mat3ra/prode": "2026.8.18-0",
         "@mat3ra/standata": "2026.8.18-0",
         "@mat3ra/tsconfig": "^2024.6.3-0",
         "@mat3ra/wode": "2026.8.18-0",
