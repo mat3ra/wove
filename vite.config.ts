@@ -73,10 +73,30 @@ export default defineConfig({
     build: {
         outDir: "build",
         rollupOptions: {
+            // A bare specifier Vite cannot resolve is emitted into the bundle as-is, where the
+            // browser rejects it ("Failed to resolve module specifier") and the page never
+            // renders — while the build still reports success. That shipped a blank demo page
+            // once already: @mat3ra/prode reaches us only as a peer of @mat3ra/mode, and CI
+            // installs with --legacy-peer-deps, which skips peers. Fail the build instead.
+            onwarn(warning, defaultHandler) {
+                if (warning.code === "UNRESOLVED_IMPORT") {
+                    throw new Error(
+                        `${warning.message}\nDeclare it in package.json so the bundle includes it.`,
+                    );
+                }
+                defaultHandler(warning);
+            },
             output: {
                 entryFileNames: "main.js",
                 chunkFileNames: "[name]-[hash].js",
-                assetFileNames: "[name]-[hash].[ext]",
+                // The stylesheet keeps a stable name so a host page can load it by URL, the
+                // way wave.js' main.css is: https://mat3ra.github.io/wove/main.css. Everything
+                // else stays hashed — a flat "main.[ext]" would collide the moment the bundle
+                // emitted a second asset of any one type (a font, an image).
+                assetFileNames: (asset) =>
+                    asset.names.some((name) => name.endsWith(".css"))
+                        ? "main.css"
+                        : "[name]-[hash].[ext]",
             },
         },
     },
