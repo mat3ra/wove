@@ -55,6 +55,7 @@ export type UnitsFlowchartContainerProps = {
     onOutputUpdateRequest?: (unit: any) => void;
     publicAccount: any;
     jobProperties?: CorePropertyHolder[];
+    jupyterUrlsByUnitFlowchartId?: Record<string, { notebookUrl: string; labUrl: string }>;
     unitTypeReduxDialog: ReduxDialogState;
     /** Passed from `Subworkflow` for layout/router context; unused here. */
     subworkflow?: Subworkflow;
@@ -79,6 +80,7 @@ export default function UnitsFlowchartContainer({
     onOutputUpdateRequest,
     publicAccount,
     jobProperties,
+    jupyterUrlsByUnitFlowchartId,
     unitTypeReduxDialog,
     UnitModalComponent,
 }: UnitsFlowchartContainerProps) {
@@ -199,16 +201,19 @@ export default function UnitsFlowchartContainer({
                     onOutputUpdateRequest={onOutputUpdateRequest ?? defaultOnUnitOutputRequest}
                     publicAccount={publicAccount}
                     jobProperties={jobProperties}
+                    jupyterUrlsByUnitFlowchartId={jupyterUrlsByUnitFlowchartId}
                 />
             )}
             <Paper
                 sx={{ height: "100%", display: "flex", flexDirection: "column" }}
-                className="subworkflow-units-flowchart">
+                className="subworkflow-units-flowchart"
+            >
                 <Stack
                     direction="row"
                     justifyContent="space-between"
                     alignItems="flex-end"
-                    sx={{ pl: 2, py: 1 }}>
+                    sx={{ pl: 2, py: 1 }}
+                >
                     <Typography variant="overline">UNITS</Typography>
                     <UnitsFlowchartDropdown
                         autoFitToView={autoFitToView}
@@ -228,7 +233,8 @@ export default function UnitsFlowchartContainer({
                     tabIndex={0}
                     flex={1}
                     onFocus={handleFocus}
-                    onBlur={handleBlur}>
+                    onBlur={handleBlur}
+                >
                     <UnitsFlowchart
                         units={flowchartUnits}
                         areUnitsExpanded={areUnitsExpanded}
