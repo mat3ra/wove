@@ -30,8 +30,11 @@ type ReduxDialogState<_D extends WoveDialogType = WoveDialogType> = [
 ];
 /** Opaque replacement for CorePropertyHolder — actual instances are passed as-is. */
 type CorePropertyHolder = unknown;
-/** Notebook and lab URLs per unit, built in job-designer via jode and passed through as-is. */
-type JupyterUrlsByUnitFlowchartId = Record<string, { notebookUrl: string; labUrl: string }>;
+/** Notebook and lab URLs per unit and repetition, built in job-designer via jode and passed through as-is. */
+type JupyterUrlsByUnitFlowchartId = Record<
+    string,
+    Record<number, { notebookUrl: string; labUrl: string }>
+>;
 
 const defaultOnUnitOutputRequest = (_u: any) => undefined;
 const defaultOnMaterialSwitch = (_index: number) => undefined;
