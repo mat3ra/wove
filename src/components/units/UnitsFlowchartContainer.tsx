@@ -30,8 +30,8 @@ type ReduxDialogState<_D extends WoveDialogType = WoveDialogType> = [
 ];
 /** Opaque replacement for CorePropertyHolder — actual instances are passed as-is. */
 type CorePropertyHolder = unknown;
-/** Extra viewer tabs per unit and repetition, built in job-designer via jode. Never read here. */
-type ExtraTabsByUnitFlowchartId = Record<string, Record<number, unknown[]>>;
+/** Endpoints each unit serves, per unit and repetition, built in job-designer via jode. Never read here. */
+type UnitEndpointsByFlowchartId = Record<string, Record<number, unknown[]>>;
 
 const defaultOnUnitOutputRequest = (_u: any) => undefined;
 const defaultOnMaterialSwitch = (_index: number) => undefined;
@@ -57,7 +57,7 @@ export type UnitsFlowchartContainerProps = {
     onOutputUpdateRequest?: (unit: any) => void;
     publicAccount: any;
     jobProperties?: CorePropertyHolder[];
-    extraTabsByUnitFlowchartId?: ExtraTabsByUnitFlowchartId;
+    unitEndpointsByFlowchartId?: UnitEndpointsByFlowchartId;
     unitTypeReduxDialog: ReduxDialogState;
     /** Passed from `Subworkflow` for layout/router context; unused here. */
     subworkflow?: Subworkflow;
@@ -82,7 +82,7 @@ export default function UnitsFlowchartContainer({
     onOutputUpdateRequest,
     publicAccount,
     jobProperties,
-    extraTabsByUnitFlowchartId,
+    unitEndpointsByFlowchartId,
     unitTypeReduxDialog,
     UnitModalComponent,
 }: UnitsFlowchartContainerProps) {
@@ -203,7 +203,7 @@ export default function UnitsFlowchartContainer({
                     onOutputUpdateRequest={onOutputUpdateRequest ?? defaultOnUnitOutputRequest}
                     publicAccount={publicAccount}
                     jobProperties={jobProperties}
-                    extraTabsByUnitFlowchartId={extraTabsByUnitFlowchartId}
+                    unitEndpointsByFlowchartId={unitEndpointsByFlowchartId}
                 />
             )}
             <Paper
