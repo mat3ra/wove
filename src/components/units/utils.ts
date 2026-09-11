@@ -88,6 +88,7 @@ export const createUnitNode = (
     areUnitsExpanded: boolean,
     // eslint-disable-next-line @typescript-eslint/ban-types
     getActions: Function,
+    cardOptions: { showDeveloperInfo?: boolean; showStatus?: boolean } = {},
 ): Node => {
     const nodeType = "unitNode";
     return createNode(unit.flowchartId, nodeType, {
@@ -100,6 +101,8 @@ export const createUnitNode = (
         isSelectable: true,
         animateOnHover: true,
         direction,
+        showDeveloperInfo: cardOptions.showDeveloperInfo,
+        showStatus: cardOptions.showStatus,
     });
 };
 

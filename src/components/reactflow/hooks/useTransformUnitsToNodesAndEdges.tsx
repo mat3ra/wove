@@ -31,10 +31,21 @@ interface Props {
     onUnitSelect: (unit: AnySubworkflowUnitSchema) => void;
     areUnitsExpanded: boolean;
     getActions: (unit: AnySubworkflowUnitSchema, index: number) => Action[];
+    showDeveloperInfo?: boolean;
+    showStatus?: boolean;
 }
 
 export function transformUnitsToNodesAndEdges(props: Props) {
-    const { units, direction, unitIndex, onUnitSelect, areUnitsExpanded, getActions } = props;
+    const {
+        units,
+        direction,
+        unitIndex,
+        onUnitSelect,
+        areUnitsExpanded,
+        getActions,
+        showDeveloperInfo,
+        showStatus,
+    } = props;
 
     // map units to reactflow nodes
     const unitNodes = units.map((unit, index) =>
@@ -46,6 +57,7 @@ export function transformUnitsToNodesAndEdges(props: Props) {
             onUnitSelect,
             areUnitsExpanded,
             getActions,
+            { showDeveloperInfo, showStatus },
         ),
     );
 

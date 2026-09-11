@@ -37,6 +37,10 @@ const defaultOnUnitOutputRequest = (_u: any) => undefined;
 const defaultOnMaterialSwitch = (_index: number) => undefined;
 
 export type UnitsFlowchartContainerProps = {
+    /** Reveal flowchart IDs on unit cards; see `CardHeader`. */
+    showDeveloperInfo?: boolean;
+    /** Show run-status badges; off in designers, on in job views. */
+    showStatus?: boolean;
     units: any[];
     unitIndex: number;
     onUnitSelect: (unit: AnySubworkflowUnitSchema) => void;
@@ -85,6 +89,8 @@ export default function UnitsFlowchartContainer({
     unitEndpointsByFlowchartId,
     unitTypeReduxDialog,
     UnitModalComponent,
+    showDeveloperInfo = false,
+    showStatus = true,
 }: UnitsFlowchartContainerProps) {
     const [areUnitsExpanded, setAreUnitsExpanded] = useState(true);
     const [autoFitToView, setAutoFitToView] = useState(true);
@@ -245,6 +251,8 @@ export default function UnitsFlowchartContainer({
                         getActions={getActions}
                         autoFitToView={autoFitToView}
                         isFocused={isFocused}
+                        showDeveloperInfo={showDeveloperInfo}
+                        showStatus={showStatus}
                     />
                 </Box>
             </Paper>

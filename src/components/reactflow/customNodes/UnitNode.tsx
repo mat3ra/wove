@@ -32,6 +32,8 @@ function UnitNode(props: Props) {
         targetPosition,
         sourceHandleStyles,
         sourceHandleLabels,
+        showDeveloperInfo,
+        showStatus,
     } = useNodeData(data);
 
     return (
@@ -45,6 +47,8 @@ function UnitNode(props: Props) {
                 onSelect={(unit) => onSelect(unit)}
                 actions={actions as any}
                 animateOnHover={animateOnHover}
+                showDeveloperInfo={showDeveloperInfo}
+                showStatus={showStatus}
             />
             {sourceHandleStyles.map((style, i) => (
                 <Handle
