@@ -30,6 +30,8 @@ type ReduxDialogState<_D extends WoveDialogType = WoveDialogType> = [
 ];
 /** Opaque replacement for CorePropertyHolder — actual instances are passed as-is. */
 type CorePropertyHolder = unknown;
+/** Endpoints each unit serves, per unit and repetition, built in job-designer via jode. Never read here. */
+type UnitEndpointsByFlowchartId = Record<string, Record<number, unknown[]>>;
 
 const defaultOnUnitOutputRequest = (_u: any) => undefined;
 const defaultOnMaterialSwitch = (_index: number) => undefined;
@@ -55,6 +57,7 @@ export type UnitsFlowchartContainerProps = {
     onOutputUpdateRequest?: (unit: any) => void;
     publicAccount: any;
     jobProperties?: CorePropertyHolder[];
+    unitEndpointsByFlowchartId?: UnitEndpointsByFlowchartId;
     unitTypeReduxDialog: ReduxDialogState;
     /** Passed from `Subworkflow` for layout/router context; unused here. */
     subworkflow?: Subworkflow;
@@ -79,6 +82,7 @@ export default function UnitsFlowchartContainer({
     onOutputUpdateRequest,
     publicAccount,
     jobProperties,
+    unitEndpointsByFlowchartId,
     unitTypeReduxDialog,
     UnitModalComponent,
 }: UnitsFlowchartContainerProps) {
@@ -199,16 +203,19 @@ export default function UnitsFlowchartContainer({
                     onOutputUpdateRequest={onOutputUpdateRequest ?? defaultOnUnitOutputRequest}
                     publicAccount={publicAccount}
                     jobProperties={jobProperties}
+                    unitEndpointsByFlowchartId={unitEndpointsByFlowchartId}
                 />
             )}
             <Paper
                 sx={{ height: "100%", display: "flex", flexDirection: "column" }}
-                className="subworkflow-units-flowchart">
+                className="subworkflow-units-flowchart"
+            >
                 <Stack
                     direction="row"
                     justifyContent="space-between"
                     alignItems="flex-end"
-                    sx={{ pl: 2, py: 1 }}>
+                    sx={{ pl: 2, py: 1 }}
+                >
                     <Typography variant="overline">UNITS</Typography>
                     <UnitsFlowchartDropdown
                         autoFitToView={autoFitToView}
@@ -228,7 +235,8 @@ export default function UnitsFlowchartContainer({
                     tabIndex={0}
                     flex={1}
                     onFocus={handleFocus}
-                    onBlur={handleBlur}>
+                    onBlur={handleBlur}
+                >
                     <UnitsFlowchart
                         units={flowchartUnits}
                         areUnitsExpanded={areUnitsExpanded}
