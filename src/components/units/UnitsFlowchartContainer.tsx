@@ -35,6 +35,7 @@ type UnitEndpointsByFlowchartId = Record<string, Record<number, unknown[]>>;
 /** Stdout of the open unit, per unit and repetition, plus the open/close hooks of its loading. Never read here. */
 type UnitOutput = {
     data: Record<string, Record<number, string>>;
+    isLoading: boolean;
     onOpen: (flowchartId: string, repetition: number) => void;
     onClose: (flowchartId: string, repetition: number) => void;
 };
