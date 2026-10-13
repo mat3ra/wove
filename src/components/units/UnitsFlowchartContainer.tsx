@@ -32,6 +32,12 @@ type ReduxDialogState<_D extends WoveDialogType = WoveDialogType> = [
 type CorePropertyHolder = unknown;
 /** Endpoints each unit serves, per unit and repetition, built in job-designer via jode. Never read here. */
 type UnitEndpointsByFlowchartId = Record<string, Record<number, unknown[]>>;
+/** Stdout of the open unit, per unit and repetition, plus the open/close hooks of its loading. Never read here. */
+type UnitOutput = {
+    data: Record<string, Record<number, string>>;
+    onOpen: (flowchartId: string, repetition: number) => void;
+    onClose: (flowchartId: string, repetition: number) => void;
+};
 
 const defaultOnUnitOutputRequest = (_u: any) => undefined;
 const defaultOnMaterialSwitch = (_index: number) => undefined;
@@ -58,6 +64,7 @@ export type UnitsFlowchartContainerProps = {
     publicAccount: any;
     jobProperties?: CorePropertyHolder[];
     unitEndpointsByFlowchartId?: UnitEndpointsByFlowchartId;
+    unitOutput?: UnitOutput;
     unitTypeReduxDialog: ReduxDialogState;
     /** Passed from `Subworkflow` for layout/router context; unused here. */
     subworkflow?: Subworkflow;
@@ -83,6 +90,7 @@ export default function UnitsFlowchartContainer({
     publicAccount,
     jobProperties,
     unitEndpointsByFlowchartId,
+    unitOutput,
     unitTypeReduxDialog,
     UnitModalComponent,
 }: UnitsFlowchartContainerProps) {
@@ -204,6 +212,7 @@ export default function UnitsFlowchartContainer({
                     publicAccount={publicAccount}
                     jobProperties={jobProperties}
                     unitEndpointsByFlowchartId={unitEndpointsByFlowchartId}
+                    unitOutput={unitOutput}
                 />
             )}
             <Paper
