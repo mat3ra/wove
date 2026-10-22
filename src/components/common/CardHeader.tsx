@@ -9,6 +9,7 @@ import { showSuccessAlert } from "@mat3ra/cove/dist/other/alerts";
 import { copyToClipboardSafe } from "@mat3ra/cove/dist/utils/clipboard";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
+import type { Theme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import s from "underscore.string";
@@ -24,6 +25,9 @@ import {
 
 const BADGE_COLORS = ["primary", "secondary", "default", "error", "info", "success", "warning"];
 
+/** `theme.designer.*` arrives with cove 2026.8+; older pins keep the palette's warning colour. */
+type ThemeWithStateTokens = Theme & { designer?: { state?: { modified?: string } } };
+
 export interface CardHeaderProps {
     title?: string;
     subheader?: string;
@@ -34,6 +38,25 @@ export interface CardHeaderProps {
     badgeColor?: string;
     isExpanded?: boolean;
     contentToCopy?: string;
+    /**
+     * Show the flowchart ID and its copy control. Off by default: the ID is a UUID that
+     * identifies nothing to a person reading a card, while repeating it under every unit
+     * costs most of a card's subheader. Hosts expose it behind a "developer info" toggle.
+     */
+    showDeveloperInfo?: boolean;
+    /**
+     * Show the run-status badge. Status belongs to a job's execution, so a designer editing
+     * a workflow template turns it off — there, every unit is perpetually "idle".
+     */
+    showStatus?: boolean;
+    /**
+     * What this card runs — engine and flavor, and the type icon that keeps colour from being
+     * the only signal of a unit's kind. Fills the subheader that the flowchart ID used to
+     * occupy, and which is otherwise blank once developer info is off.
+     */
+    meta?: React.ReactNode;
+    /** Something here differs from its default; hosts derive it from `provider.isEdited`. */
+    isModified?: boolean;
 }
 
 export function CardHeader({
@@ -46,9 +69,13 @@ export function CardHeader({
     badgeColor = "default",
     isExpanded = false,
     contentToCopy,
+    showDeveloperInfo = false,
+    showStatus = true,
+    meta = null,
+    isModified = false,
 }: CardHeaderProps) {
     const avatarVariant = avatarType === "roman" ? "rounded" : "circular";
-    const isBadge = avatarType !== "roman";
+    const isBadge = avatarType !== "roman" && showStatus;
     const safeBadgeColor = BADGE_COLORS.includes(badgeColor) ? badgeColor : "default";
 
     return (
@@ -58,7 +85,7 @@ export function CardHeader({
                     color={safeBadgeColor as any}
                     overlap="circular"
                     anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    title={s.capitalize(status)}
+                    title={showStatus ? s.capitalize(status) : ""}
                     badgeContent={isBadge && status ? <Box>{s.capitalize(status[0])}</Box> : null}
                 >
                     <StyledAvatar isBadge={isBadge} color={safeBadgeColor} variant={avatarVariant}>
@@ -95,36 +122,59 @@ export function CardHeader({
                 )
             }
             title={
-                <Typography noWrap variant="subtitle2" color="text.primary">
-                    {title}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, minWidth: 0 }}>
+                    <Typography noWrap variant="subtitle2" color="text.primary">
+                        {title}
+                    </Typography>
+                    {isModified ? (
+                        <Box
+                            data-tid="unit-card-modified"
+                            title="Changed from the default"
+                            sx={(theme) => ({
+                                width: 6,
+                                height: 6,
+                                borderRadius: "50%",
+                                flexShrink: 0,
+                                backgroundColor:
+                                    (theme as ThemeWithStateTokens).designer?.state?.modified ??
+                                    theme.palette.warning.main,
+                            })}
+                        />
+                    ) : null}
+                </Box>
             }
             subheader={
-                <Subheader>
-                    {isExpanded ? (
-                        <Box>
-                            <Typography variant="caption" noWrap sx={{ width: "100%" }}>
-                                Flowchart ID:&nbsp;
+                !showDeveloperInfo ? (
+                    meta || null
+                ) : (
+                    <Subheader>
+                        {isExpanded ? (
+                            <Box>
+                                <Typography variant="caption" noWrap sx={{ width: "100%" }}>
+                                    Flowchart ID:&nbsp;
+                                </Typography>
+                            </Box>
+                        ) : null}
+                        <FlowchartIdContainer>
+                            <Typography variant="caption" noWrap>
+                                {subheader}
                             </Typography>
-                        </Box>
-                    ) : null}
-                    <FlowchartIdContainer>
-                        <Typography variant="caption" noWrap>
-                            {subheader}
-                        </Typography>
-                        <IconButton
-                            onClick={() =>
-                                copyToClipboardSafe(contentToCopy ?? "").then((ok: boolean) => {
-                                    if (ok) {
-                                        showSuccessAlert(`Unit ${title} was successfully copied`);
-                                    }
-                                })
-                            }
-                        >
-                            <IconByName name="actions.copy" />
-                        </IconButton>
-                    </FlowchartIdContainer>
-                </Subheader>
+                            <IconButton
+                                onClick={() =>
+                                    copyToClipboardSafe(contentToCopy ?? "").then((ok: boolean) => {
+                                        if (ok) {
+                                            showSuccessAlert(
+                                                `Unit ${title} was successfully copied`,
+                                            );
+                                        }
+                                    })
+                                }
+                            >
+                                <IconByName name="actions.copy" />
+                            </IconButton>
+                        </FlowchartIdContainer>
+                    </Subheader>
+                )
             }
         />
     );

@@ -33,6 +33,10 @@ export type WorkflowUnitCardProps = {
     onModelUpdate?: (...args: unknown[]) => void;
     ApplicationComponent?: React.ComponentType<any>;
     ModelComponent?: React.ComponentType<any>;
+    /** Reveal the flowchart ID; see `CardHeader`. */
+    showDeveloperInfo?: boolean;
+    /** Show the run-status badge; off in designers, on in job views. */
+    showStatus?: boolean;
 };
 
 export function WorkflowUnitCard({
@@ -45,6 +49,8 @@ export function WorkflowUnitCard({
     subworkflow,
     isCardContentExpanded = true,
     editable = false,
+    showDeveloperInfo = false,
+    showStatus = true,
     headerStatusCls,
     onUpdate,
     onApplicationUpdate,
@@ -129,6 +135,8 @@ export function WorkflowUnitCard({
                     actions={actions}
                     isExpanded={isCardContentExpanded}
                     contentToCopy={contentToCopy}
+                    showDeveloperInfo={showDeveloperInfo}
+                    showStatus={showStatus}
                 />
                 {isCardContentExpanded && (
                     <>
